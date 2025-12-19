@@ -147,19 +147,22 @@ function updateStats() {
 function applyFilters() {
   const query = searchInput.value.trim().toLowerCase();
   const onlyMissing = missingOnly.checked;
-  const onlyChanged = changedOnly.checked;
+  const onlySame = changedOnly.checked;
 
   state.rows.forEach((row) => {
     const rowEl = row.element;
+    const isEditing = document.activeElement === row.input;
     const matchesSearch =
       !query ||
       rowEl.dataset.key.includes(query) ||
       rowEl.dataset.base.includes(query) ||
       rowEl.dataset.target.includes(query);
     const matchesMissing = !onlyMissing || String(row.targetValue).trim() === '';
-    const matchesChanged = !onlyChanged || row.targetValue !== row.baseValue;
+    const matchesSame = !onlySame || row.targetValue === row.baseValue;
 
-    rowEl.style.display = matchesSearch && matchesMissing && matchesChanged ? '' : 'none';
+    rowEl.style.display = matchesSearch && (matchesMissing || isEditing) && (matchesSame || isEditing)
+      ? ''
+      : 'none';
   });
 }
 
