@@ -297,6 +297,9 @@
       "add_button": "Ajouter",
       "reset_button_title": "Tout réinitialiser à zéro"
     },
+    "avisos": {
+      "title": "Avertissements"
+    },
     "sound_meter": {
       "title": "Sonomètre",
       "silence": "Silence",
@@ -307,7 +310,14 @@
       "access_denied": "Accès au microphone refusé.",
       "enable_browser_settings": "Vous devez autoriser l'accès dans les paramètres de votre navigateur.",
       "permission_needed": "L'autorisation d'utiliser le microphone est requise.",
-      "activate_meter": "Activer le sonomètre"
+      "activate_meter": "Activer le sonomètre",
+      "thresholds_title": "Seuils",
+      "presets_title": "Préréglages rapides",
+      "preset_quiet": "Calme",
+      "preset_classroom": "Salle de classe",
+      "preset_noisy": "Bruyant",
+      "silence_limit": "Silence max",
+      "conversation_limit": "Conversation max"
     },
     "memory_game": {
       "title": "Jeu de mémoire",

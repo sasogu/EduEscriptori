@@ -296,6 +296,9 @@
       "add_button": "Hinzufügen",
       "reset_button_title": "Alles auf null setzen"
     },
+    "avisos": {
+      "title": "Verwarnungen"
+    },
     "sound_meter": {
       "title": "Lärmpegelmesser",
       "silence": "Stille",
@@ -306,7 +309,14 @@
       "access_denied": "Zugriff auf das Mikrofon verweigert.",
       "enable_browser_settings": "Du musst den Zugriff in den Browsereinstellungen erlauben.",
       "permission_needed": "Es wird eine Berechtigung benötigt, um das Mikrofon zu verwenden.",
-      "activate_meter": "Messgerät aktivieren"
+      "activate_meter": "Messgerät aktivieren",
+      "thresholds_title": "Schwellenwerte",
+      "presets_title": "Schnellvorgaben",
+      "preset_quiet": "Leise",
+      "preset_classroom": "Klassenzimmer",
+      "preset_noisy": "Laut",
+      "silence_limit": "Max. Stille",
+      "conversation_limit": "Max. Gespräch"
     },
     "memory_game": {
       "title": "Memory",

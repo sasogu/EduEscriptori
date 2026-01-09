@@ -296,6 +296,9 @@
       "add_button": "Add",
       "reset_button_title": "Reset all to zero"
     },
+    "avisos": {
+      "title": "Warnings"
+    },
     "sound_meter": {
       "title": "Sound Meter",
       "silence": "Silence",
@@ -306,7 +309,14 @@
       "access_denied": "Microphone access denied.",
       "enable_browser_settings": "You must allow access in your browser settings.",
       "permission_needed": "Permission is needed to use the microphone.",
-      "activate_meter": "Activate Meter"
+      "activate_meter": "Activate Meter",
+      "thresholds_title": "Thresholds",
+      "presets_title": "Quick presets",
+      "preset_quiet": "Quiet",
+      "preset_classroom": "Classroom",
+      "preset_noisy": "Noisy",
+      "silence_limit": "Silence max",
+      "conversation_limit": "Conversation max"
     },
     "memory_game": {
       "title": "Memory Game",

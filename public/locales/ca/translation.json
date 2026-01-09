@@ -296,6 +296,9 @@
       "add_button": "Afegir",
       "reset_button_title": "Reiniciar-ho tot a zero"
     },
+    "avisos": {
+      "title": "Avisos"
+    },
     "sound_meter": {
       "title": "Mesurador de Soroll",
       "silence": "Silenci",
@@ -306,7 +309,14 @@
       "access_denied": "Accés al micròfon denegat.",
       "enable_browser_settings": "Has de permetre l'accés a la configuració del teu navegador.",
       "permission_needed": "Es necessita permís per utilitzar el micròfon.",
-      "activate_meter": "Activar Mesurador"
+      "activate_meter": "Activar Mesurador",
+      "thresholds_title": "Llindars",
+      "presets_title": "Ajustos ràpids",
+      "preset_quiet": "Silenciós",
+      "preset_classroom": "Aula",
+      "preset_noisy": "Sorollós",
+      "silence_limit": "Màxim de silenci",
+      "conversation_limit": "Màxim de conversa"
     },
     "memory_game": {
       "title": "Memorama",

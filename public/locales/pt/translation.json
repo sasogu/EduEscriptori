@@ -298,6 +298,9 @@
       "add_button": "Adicionar",
       "reset_button_title": "Reiniciar tudo para zero"
     },
+    "avisos": {
+      "title": "Avisos"
+    },
     "sound_meter": {
       "title": "Medidor de Ruído",
       "silence": "Silêncio",
@@ -308,7 +311,14 @@
       "access_denied": "Acesso ao microfone negado.",
       "enable_browser_settings": "Você deve permitir o acesso nas configurações do navegador.",
       "permission_needed": "É necessário permissão para usar o microfone.",
-      "activate_meter": "Ativar Medidor"
+      "activate_meter": "Ativar Medidor",
+      "thresholds_title": "Limiares",
+      "presets_title": "Predefinições rápidas",
+      "preset_quiet": "Silencioso",
+      "preset_classroom": "Sala de aula",
+      "preset_noisy": "Barulhento",
+      "silence_limit": "Máximo de silêncio",
+      "conversation_limit": "Máximo de conversa"
     },
     "memory_game": {
       "title": "Jogo da Memória",

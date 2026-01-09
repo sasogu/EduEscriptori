@@ -295,6 +295,9 @@
       "add_button": "Gehitu",
       "reset_button_title": "Berrezarri dena zerora"
     },
+    "avisos": {
+      "title": "Abisuak"
+    },
     "sound_meter": {
       "title": "Zarata Neurgailua",
       "silence": "Isiltasuna",
@@ -305,7 +308,14 @@
       "access_denied": "Mikrofonoaren sarbidea ukatuta.",
       "enable_browser_settings": "Sarbidea baimendu behar duzu zure nabigatzailearen ezarpenetan.",
       "permission_needed": "Baimena behar da mikrofonoa erabiltzeko.",
-      "activate_meter": "Aktibatu Neurgailua"
+      "activate_meter": "Aktibatu Neurgailua",
+      "thresholds_title": "Atalaseak",
+      "presets_title": "Aurre-ezarpen azkarrak",
+      "preset_quiet": "Isila",
+      "preset_classroom": "Gela",
+      "preset_noisy": "Zaratatsua",
+      "silence_limit": "Isiltasun maximoa",
+      "conversation_limit": "Elkarrizketa maximoa"
     },
     "memory_game": {
       "title": "Memorama",
