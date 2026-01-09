@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getFromIndexedDb, setInIndexedDb } from '../utils/storage';
 
 let didWarnQuotaExceeded = false;
@@ -15,6 +15,18 @@ const isQuotaExceededError = (error: unknown): boolean => {
   return false;
 };
 
+const cloneForState = <T,>(value: T): T => {
+  try {
+    if (typeof structuredClone === 'function') {
+      return structuredClone(value);
+    }
+  } catch {
+    // ignore
+  }
+  // Fallback seguro para valores serializables (requisito para localStorage)
+  return JSON.parse(JSON.stringify(value)) as T;
+};
+
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
@@ -28,6 +40,12 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
     }
   });
 
+  const storedValueRef = useRef(storedValue);
+
+  useEffect(() => {
+    storedValueRef.current = storedValue;
+  }, [storedValue]);
+
   useEffect(() => {
     const item = window.localStorage.getItem(key);
     if (item !== IDB_MARKER) return;
@@ -35,7 +53,9 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
       .then((json) => {
         if (!json) return;
         try {
-          setStoredValue(JSON.parse(json));
+          const parsed = JSON.parse(json) as T;
+          storedValueRef.current = parsed;
+          setStoredValue(parsed);
         } catch (error) {
           console.error(error);
         }
@@ -45,9 +65,12 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
       });
   }, [key]);
 
-  const setValue = (value: T | ((val: T) => T)) => {
+  const setValue = useCallback((value: T | ((val: T) => T)) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const current = storedValueRef.current;
+      const computed = value instanceof Function ? value(current) : value;
+      const valueToStore = Object.is(computed, current) ? cloneForState(computed) : computed;
+      storedValueRef.current = valueToStore;
       setStoredValue(valueToStore);
       const json = JSON.stringify(valueToStore);
       if (json.length > IDB_THRESHOLD_BYTES) {
@@ -59,18 +82,26 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
       window.localStorage.setItem(key, json);
     } catch (error) {
       if (isQuotaExceededError(error)) {
-        setInIndexedDb(key, JSON.stringify(value instanceof Function ? value(storedValue) : value))
-          .then(() => window.localStorage.setItem(key, IDB_MARKER))
-          .catch((idbError) => console.error(idbError));
-        if (!didWarnQuotaExceeded) {
-          window.dispatchEvent(new Event('storage-quota-exceeded'));
-          didWarnQuotaExceeded = true;
+        try {
+          const current = storedValueRef.current;
+          const computed = value instanceof Function ? value(current) : value;
+          const valueToStore = Object.is(computed, current) ? cloneForState(computed) : computed;
+          storedValueRef.current = valueToStore;
+          setStoredValue(valueToStore);
+          setInIndexedDb(key, JSON.stringify(valueToStore))
+            .then(() => window.localStorage.setItem(key, IDB_MARKER))
+            .catch((idbError) => console.error(idbError));
+        } finally {
+          if (!didWarnQuotaExceeded) {
+            window.dispatchEvent(new Event('storage-quota-exceeded'));
+            didWarnQuotaExceeded = true;
+          }
         }
         return;
       }
       console.error(error);
     }
-  };
+  }, [key]);
 
   return [storedValue, setValue];
 }

@@ -349,7 +349,7 @@ export const DrawingPadWidget: React.FC = () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []); // Sin dependencias para evitar bucles - todo se maneja internamente
+  }, [getBackupCanvas, redrawCanvasWithPan]);
 
   // Efecto para cambiar el modo de composición global del canvas (dibujar vs. borrar)
   useEffect(() => {

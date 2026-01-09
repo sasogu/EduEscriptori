@@ -30,15 +30,13 @@ export const TimerWidget: FC = () => {
         return () => clearInterval(interval);
     }, [isActive, remainingSeconds]);
 
-    const handleTimeChange = () => {
+    useEffect(() => {
         const total = (minutesInput * 60) + secondsInput;
         setTotalDuration(total);
         if (!isActive) {
             setRemainingSeconds(total);
         }
-    };
-
-    useEffect(handleTimeChange, [minutesInput, secondsInput]);
+    }, [minutesInput, secondsInput, isActive]);
 
     const toggleTimer = () => {
         if (totalDuration <= 0) return;

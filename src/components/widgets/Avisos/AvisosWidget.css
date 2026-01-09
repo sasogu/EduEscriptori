@@ -1,10 +1,143 @@
-.avisos-widget {
-    @apply w-full h-full overflow-hidden bg-white;
+.avisos-loading {
+    @apply w-full h-full flex items-center justify-center;
 }
 
-.avisos-iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    display: block;
+.avisos-native {
+    @apply w-full h-full overflow-hidden flex flex-col;
+}
+
+.avisos-header {
+    @apply flex items-center justify-between gap-3 p-3;
+}
+
+.avisos-header-left {
+    @apply flex items-center gap-3;
+}
+
+.avisos-header-right {
+    @apply flex items-center gap-2;
+}
+
+.avisos-title {
+    @apply font-semibold;
+}
+
+.avisos-toolbar {
+    @apply flex items-center gap-2 px-3 pb-3 flex-wrap;
+}
+
+.avisos-add {
+    @apply flex items-center gap-2 px-3 pb-3;
+}
+
+.avisos-field {
+    @apply flex items-center gap-2;
+}
+
+.avisos-field-inline {
+    @apply flex items-center gap-2;
+}
+
+.avisos-label {
+    @apply text-sm opacity-80;
+}
+
+.avisos-select {
+    @apply rounded border border-gray-300 bg-white px-2 py-1 text-sm;
+}
+
+.avisos-input {
+    @apply w-full rounded border border-gray-300 bg-white px-2 py-1;
+}
+
+.avisos-input-small {
+    @apply w-20 rounded border border-gray-300 bg-white px-2 py-1 text-sm;
+}
+
+.avisos-textarea {
+    @apply w-full rounded border border-gray-300 bg-white p-2 text-sm;
+}
+
+.avisos-btn {
+    @apply inline-flex items-center gap-2 rounded border border-gray-300 bg-white px-2 py-1 text-sm;
+}
+
+.avisos-icon-btn {
+    @apply inline-flex items-center justify-center rounded border border-gray-300 bg-white px-2 py-1 text-sm;
+}
+
+.avisos-pill {
+    @apply inline-flex items-center justify-center rounded border border-gray-300 bg-white px-2 py-1 text-sm;
+}
+
+.avisos-status {
+    @apply text-sm opacity-80 ml-auto;
+}
+
+.avisos-list {
+    @apply flex-1 overflow-auto px-3 pb-3;
+}
+
+.avisos-row {
+    @apply flex items-center justify-between gap-2 py-2 border-b border-gray-200;
+}
+
+.avisos-row-right {
+    @apply flex items-center gap-2 flex-wrap justify-end;
+}
+
+.avisos-name {
+    @apply text-left font-medium;
+}
+
+.avisos-name-static {
+    @apply font-medium;
+}
+
+.avisos-count {
+    @apply text-sm opacity-90;
+}
+
+.avisos-timer {
+    @apply text-sm opacity-90;
+}
+
+.avisos-empty {
+    @apply px-3 py-6 text-sm opacity-80;
+}
+
+.avisos-modal-backdrop {
+    @apply fixed inset-0 bg-black/40 flex items-center justify-center p-4;
+}
+
+.avisos-modal {
+    @apply w-full max-w-2xl rounded bg-white p-4;
+}
+
+.avisos-modal-header {
+    @apply flex items-center justify-between gap-2 mb-3;
+}
+
+.avisos-modal-title {
+    @apply font-semibold;
+}
+
+.avisos-section {
+    @apply mb-4;
+}
+
+.avisos-section-title {
+    @apply font-medium mb-2;
+}
+
+.avisos-row-form {
+    @apply flex items-center gap-2 flex-wrap;
+}
+
+.avisos-file {
+    @apply cursor-pointer;
+}
+
+.avisos-file input {
+    display: none;
 }

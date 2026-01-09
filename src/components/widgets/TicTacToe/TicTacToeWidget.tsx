@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { WidgetConfig } from '../../../types';
@@ -33,7 +33,7 @@ export const TicTacToeWidget: FC = () => {
     setPlayers({ ...players, [player]: name });
   };
   
-  const calculateWinner = (squares: BoardCell[]) => {
+  const calculateWinner = useCallback((squares: BoardCell[]) => {
     const lines = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
       [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
@@ -46,7 +46,7 @@ export const TicTacToeWidget: FC = () => {
       }
     }
     return null;
-  };
+  }, []);
 
   useEffect(() => {
     const gameWinner = calculateWinner(board);
@@ -54,7 +54,7 @@ export const TicTacToeWidget: FC = () => {
       setWinner(gameWinner);
       setScore(prevScore => ({ ...prevScore, [gameWinner as 'X' | 'O']: prevScore[gameWinner as 'X' | 'O'] + 1 }));
     }
-  }, [board, winner, setScore]);
+  }, [board, winner, setScore, calculateWinner]);
 
 
   const handleClick = (i: number) => {

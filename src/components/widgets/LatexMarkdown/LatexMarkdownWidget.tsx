@@ -187,7 +187,7 @@ export const LatexMarkdownWidget: FC = () => {
         previewElement.innerHTML = `<div class="error-message">${genericError}</div>`;
       }
     }
-  }, [input, mode]);
+  }, [input, mode, t]);
 
   // Si las traducciones no están listas, mostrar un loader simple
   if (!ready) {
