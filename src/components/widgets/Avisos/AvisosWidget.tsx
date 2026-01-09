@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Download, Upload, Settings, Play, Pause, RotateCcw, History } from 'lucide-react';
 import type { WidgetConfig } from '../../../types';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
-import { withBaseUrl } from '../../../utils/assetPaths';
 import './AvisosWidget.css';
 
 type StudentEventType = 'neg' | 'pos';
@@ -199,6 +198,26 @@ export const AvisosWidget: FC = () => {
     const [historyOpen, setHistoryOpen] = useState(false);
     const [classHistoryOpen, setClassHistoryOpen] = useState(false);
     const [historyStudentId, setHistoryStudentId] = useState<string | null>(null);
+
+    const closeAllModals = () => {
+        setSettingsOpen(false);
+        setTimerOpen(false);
+        setHistoryOpen(false);
+        setClassHistoryOpen(false);
+    };
+
+    useEffect(() => {
+        if (!settingsOpen && !timerOpen && !historyOpen && !classHistoryOpen) return;
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                closeAllModals();
+            }
+        };
+
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [settingsOpen, timerOpen, historyOpen, classHistoryOpen]);
 
     const [importText, setImportText] = useState('');
     const importFileRef = useRef<HTMLInputElement>(null);
@@ -766,113 +785,122 @@ export const AvisosWidget: FC = () => {
             )}
 
             {settingsOpen && (
-                <div className="avisos-modal-backdrop" role="dialog" aria-modal="true">
+                <div
+                    className="avisos-modal-backdrop"
+                    role="dialog"
+                    aria-modal="true"
+                    onMouseDown={(e) => {
+                        if (e.target === e.currentTarget) setSettingsOpen(false);
+                    }}
+                >
                     <div className="avisos-modal">
                         <div className="avisos-modal-header">
                             <div className="avisos-modal-title">Configuración</div>
                             <button type="button" className="avisos-btn" onClick={() => setSettingsOpen(false)}>Cerrar</button>
                         </div>
 
-                        <div className="avisos-section">
-                            <div className="avisos-section-title">Clase</div>
-                            <div className="avisos-row-form">
-                                <input
-                                    className="avisos-input"
-                                    value={cls.name}
-                                    onChange={(e) => {
-                                        const v = e.target.value;
-                                        setRawState((prev: unknown) => {
-                                            const s = migrateState(prev).state;
-                                            s.classes[s.ui.selectedClassId].name = v;
-                                            return s;
-                                        });
-                                    }}
-                                    placeholder="Ej: 1ºA"
+                        <div className="avisos-modal-body">
+                            <div className="avisos-section">
+                                <div className="avisos-section-title">Clase</div>
+                                <div className="avisos-row-form">
+                                    <input
+                                        className="avisos-input"
+                                        value={cls.name}
+                                        onChange={(e) => {
+                                            const v = e.target.value;
+                                            setRawState((prev: unknown) => {
+                                                const s = migrateState(prev).state;
+                                                s.classes[s.ui.selectedClassId].name = v;
+                                                return s;
+                                            });
+                                        }}
+                                        placeholder="Ej: 1ºA"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="avisos-section">
+                                <div className="avisos-section-title">Minutos por punto</div>
+                                <div className="avisos-row-form">
+                                    <label className="avisos-field-inline">
+                                        <span className="avisos-label">Minutos por ☹︎</span>
+                                        <input
+                                            className="avisos-input-small"
+                                            type="number"
+                                            min={0}
+                                            step={1}
+                                            value={state.ui.negMinutesPerPoint}
+                                            onChange={(e) => {
+                                                const v = clampMinutes(e.target.value, DEFAULT_NEG_MINUTES_PER_POINT);
+                                                setRawState((prev: unknown) => {
+                                                    const s = migrateState(prev).state;
+                                                    s.ui.negMinutesPerPoint = v;
+                                                    return s;
+                                                });
+                                            }}
+                                        />
+                                    </label>
+                                    <label className="avisos-field-inline">
+                                        <span className="avisos-label">Minutos por 🙂</span>
+                                        <input
+                                            className="avisos-input-small"
+                                            type="number"
+                                            min={0}
+                                            step={1}
+                                            value={state.ui.posMinutesPerPoint}
+                                            onChange={(e) => {
+                                                const v = clampMinutes(e.target.value, DEFAULT_POS_MINUTES_PER_POINT);
+                                                setRawState((prev: unknown) => {
+                                                    const s = migrateState(prev).state;
+                                                    s.ui.posMinutesPerPoint = v;
+                                                    return s;
+                                                });
+                                            }}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="avisos-section">
+                                <div className="avisos-section-title">Backup</div>
+                                <div className="avisos-row-form">
+                                    <button type="button" className="avisos-btn" onClick={exportBackup}><Download size={16} /> Exportar</button>
+                                    <label className="avisos-btn avisos-file">
+                                        <Upload size={16} /> Importar
+                                        <input ref={importBackupRef} type="file" accept="application/json,.json" onChange={onImportBackup} />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="avisos-section">
+                                <div className="avisos-section-title">Importar alumnos</div>
+                                <textarea
+                                    className="avisos-textarea"
+                                    rows={6}
+                                    value={importText}
+                                    onChange={(e) => setImportText(e.target.value)}
+                                    placeholder="Pega 1 alumno por línea"
                                 />
-                            </div>
-                        </div>
-
-                        <div className="avisos-section">
-                            <div className="avisos-section-title">Minutos por punto</div>
-                            <div className="avisos-row-form">
-                                <label className="avisos-field-inline">
-                                    <span className="avisos-label">Minutos por ☹︎</span>
-                                    <input
-                                        className="avisos-input-small"
-                                        type="number"
-                                        min={0}
-                                        step={1}
-                                        value={state.ui.negMinutesPerPoint}
-                                        onChange={(e) => {
-                                            const v = clampMinutes(e.target.value, DEFAULT_NEG_MINUTES_PER_POINT);
-                                            setRawState((prev: unknown) => {
-                                                const s = migrateState(prev).state;
-                                                s.ui.negMinutesPerPoint = v;
-                                                return s;
-                                            });
+                                <div className="avisos-row-form">
+                                    <button
+                                        type="button"
+                                        className="avisos-btn"
+                                        onClick={() => {
+                                            applyImport(parseNames(importText));
+                                            setImportText('');
                                         }}
-                                    />
-                                </label>
-                                <label className="avisos-field-inline">
-                                    <span className="avisos-label">Minutos por 🙂</span>
-                                    <input
-                                        className="avisos-input-small"
-                                        type="number"
-                                        min={0}
-                                        step={1}
-                                        value={state.ui.posMinutesPerPoint}
-                                        onChange={(e) => {
-                                            const v = clampMinutes(e.target.value, DEFAULT_POS_MINUTES_PER_POINT);
-                                            setRawState((prev: unknown) => {
-                                                const s = migrateState(prev).state;
-                                                s.ui.posMinutesPerPoint = v;
-                                                return s;
-                                            });
-                                        }}
-                                    />
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className="avisos-section">
-                            <div className="avisos-section-title">Backup</div>
-                            <div className="avisos-row-form">
-                                <button type="button" className="avisos-btn" onClick={exportBackup}><Download size={16} /> Exportar</button>
-                                <label className="avisos-btn avisos-file">
-                                    <Upload size={16} /> Importar
-                                    <input ref={importBackupRef} type="file" accept="application/json,.json" onChange={onImportBackup} />
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className="avisos-section">
-                            <div className="avisos-section-title">Importar alumnos</div>
-                            <textarea
-                                className="avisos-textarea"
-                                rows={6}
-                                value={importText}
-                                onChange={(e) => setImportText(e.target.value)}
-                                placeholder="Pega 1 alumno por línea"
-                            />
-                            <div className="avisos-row-form">
-                                <button
-                                    type="button"
-                                    className="avisos-btn"
-                                    onClick={() => {
-                                        applyImport(parseNames(importText));
-                                        setImportText('');
-                                    }}
-                                >
-                                    Aplicar
-                                </button>
-                                <label className="avisos-btn avisos-file">
-                                    <Upload size={16} /> TXT/CSV
-                                    <input ref={importFileRef} type="file" accept=".txt,.csv,text/plain,text/csv" onChange={onImportFile} />
-                                </label>
-                                <label className="avisos-btn avisos-file">
-                                    <Upload size={16} /> PDF
-                                    <input ref={importPdfRef} type="file" accept="application/pdf,.pdf" onChange={onImportPdf} />
-                                </label>
+                                    >
+                                        Aplicar
+                                    </button>
+                                    <label className="avisos-btn avisos-file">
+                                        <Upload size={16} /> TXT/CSV
+                                        <input ref={importFileRef} type="file" accept=".txt,.csv,text/plain,text/csv" onChange={onImportFile} />
+                                    </label>
+                                    <label className="avisos-btn avisos-file">
+                                        <Upload size={16} /> PDF
+                                        <input ref={importPdfRef} type="file" accept="application/pdf,.pdf" onChange={onImportPdf} />
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -880,71 +908,98 @@ export const AvisosWidget: FC = () => {
             )}
 
             {timerOpen && (
-                <div className="avisos-modal-backdrop" role="dialog" aria-modal="true">
+                <div
+                    className="avisos-modal-backdrop"
+                    role="dialog"
+                    aria-modal="true"
+                    onMouseDown={(e) => {
+                        if (e.target === e.currentTarget) setTimerOpen(false);
+                    }}
+                >
                     <div className="avisos-modal">
                         <div className="avisos-modal-header">
                             <div className="avisos-modal-title">Tiempo pendiente (☹︎)</div>
                             <button type="button" className="avisos-btn" onClick={() => setTimerOpen(false)}>Cerrar</button>
                         </div>
-                        {timerPendingStudents.length === 0 ? (
-                            <div className="avisos-empty">No hay alumnos con tiempo pendiente en esta clase.</div>
-                        ) : (
-                            <ul className="avisos-list">
-                                {timerPendingStudents.map(({ s, remaining }) => (
-                                    <li key={s.id} className="avisos-row">
-                                        <span className="avisos-name-static">{s.name}</span>
-                                        <span className="avisos-timer">⏱ {formatRemaining(remaining)}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                        <div className="avisos-modal-body">
+                            {timerPendingStudents.length === 0 ? (
+                                <div className="avisos-empty">No hay alumnos con tiempo pendiente en esta clase.</div>
+                            ) : (
+                                <ul className="avisos-list">
+                                    {timerPendingStudents.map(({ s, remaining }) => (
+                                        <li key={s.id} className="avisos-row">
+                                            <span className="avisos-name-static">{s.name}</span>
+                                            <span className="avisos-timer">⏱ {formatRemaining(remaining)}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
 
             {historyOpen && historyStudent && (
-                <div className="avisos-modal-backdrop" role="dialog" aria-modal="true">
+                <div
+                    className="avisos-modal-backdrop"
+                    role="dialog"
+                    aria-modal="true"
+                    onMouseDown={(e) => {
+                        if (e.target === e.currentTarget) setHistoryOpen(false);
+                    }}
+                >
                     <div className="avisos-modal">
                         <div className="avisos-modal-header">
                             <div className="avisos-modal-title">Histórico — {historyStudent.name}</div>
                             <button type="button" className="avisos-btn" onClick={() => setHistoryOpen(false)}>Cerrar</button>
                         </div>
-                        {historyStudent.history.length === 0 ? (
-                            <div className="avisos-empty">Este alumno aún no tiene eventos en el histórico.</div>
-                        ) : (
-                            <ul className="avisos-list">
-                                {[...historyStudent.history].reverse().map((ev, idx) => (
-                                    <li key={idx} className="avisos-row">
-                                        <span className="avisos-name-static">{new Date(ev.ts).toLocaleString()}</span>
-                                        <span className="avisos-count">{ev.type === 'neg' ? '☹︎' : '🙂'} +{ev.delta || 1}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                        <div className="avisos-modal-body">
+                            {historyStudent.history.length === 0 ? (
+                                <div className="avisos-empty">Este alumno aún no tiene eventos en el histórico.</div>
+                            ) : (
+                                <ul className="avisos-list">
+                                    {[...historyStudent.history].reverse().map((ev, idx) => (
+                                        <li key={idx} className="avisos-row">
+                                            <span className="avisos-name-static">{new Date(ev.ts).toLocaleString()}</span>
+                                            <span className="avisos-count">{ev.type === 'neg' ? '☹︎' : '🙂'} +{ev.delta || 1}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
 
             {classHistoryOpen && (
-                <div className="avisos-modal-backdrop" role="dialog" aria-modal="true">
+                <div
+                    className="avisos-modal-backdrop"
+                    role="dialog"
+                    aria-modal="true"
+                    onMouseDown={(e) => {
+                        if (e.target === e.currentTarget) setClassHistoryOpen(false);
+                    }}
+                >
                     <div className="avisos-modal">
                         <div className="avisos-modal-header">
                             <div className="avisos-modal-title">Histórico de la clase</div>
                             <button type="button" className="avisos-btn" onClick={() => setClassHistoryOpen(false)}>Cerrar</button>
                         </div>
-                        {classHistoryRows.length === 0 ? (
-                            <div className="avisos-empty">Esta clase aún no tiene puntos en el histórico.</div>
-                        ) : (
-                            <ul className="avisos-list">
-                                {classHistoryRows.map((r, idx) => (
-                                    <li key={idx} className="avisos-row">
-                                        <span className="avisos-name-static">{r.name}</span>
-                                        <span className="avisos-count">☹︎ {r.neg}</span>
-                                        <span className="avisos-count">🙂 {r.pos}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                        <div className="avisos-modal-body">
+                            {classHistoryRows.length === 0 ? (
+                                <div className="avisos-empty">Esta clase aún no tiene puntos en el histórico.</div>
+                            ) : (
+                                <ul className="avisos-list">
+                                    {classHistoryRows.map((r, idx) => (
+                                        <li key={idx} className="avisos-history-row">
+                                            <span className="avisos-name-static">{r.name}</span>
+                                            <span className="avisos-history-count">☹︎ {r.neg}</span>
+                                            <span className="avisos-history-count">🙂 {r.pos}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
@@ -955,13 +1010,31 @@ export const AvisosWidget: FC = () => {
 const WidgetIcon: FC = () => {
     const { t } = useTranslation();
 
+    // SVG inline para poder usar los colores del tema (variables CSS)
+    // y que se vea "vivo" tanto en la toolbar como en Ajustes.
     return (
-        <img
-            src={withBaseUrl('icons/WorkList.png')}
-            alt={t('widgets.avisos.title')}
+        <svg
             width={52}
             height={52}
-        />
+            viewBox="0 0 64 64"
+            role="img"
+            aria-label={t('widgets.avisos.title')}
+        >
+            <path
+                d="M32 8 L60 56 H4 Z"
+                fill="var(--color-widget-header)"
+                stroke="var(--color-text-dark)"
+                strokeWidth={3}
+                strokeLinejoin="round"
+            />
+            <path
+                d="M32 24 v16"
+                stroke="var(--color-text-light)"
+                strokeWidth={6}
+                strokeLinecap="round"
+            />
+            <circle cx={32} cy={47} r={3.5} fill="var(--color-text-light)" />
+        </svg>
     );
 };
 

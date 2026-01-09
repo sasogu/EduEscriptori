@@ -82,6 +82,26 @@
     @apply flex items-center justify-between gap-2 py-2 border-b border-gray-200;
 }
 
+/* Histórico de clase: columnas alineadas (nombre | neg | pos) */
+.avisos-history-row {
+    display: grid;
+    grid-template-columns: 1fr 96px 96px;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgb(229 231 235);
+}
+
+.avisos-history-row .avisos-name-static {
+    min-width: 0;
+}
+
+.avisos-history-count {
+    justify-self: end;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
 .avisos-row-right {
     @apply flex items-center gap-2 flex-wrap justify-end;
 }
@@ -107,15 +127,21 @@
 }
 
 .avisos-modal-backdrop {
-    @apply fixed inset-0 bg-black/40 flex items-center justify-center p-4;
+    /* Si el modal es alto (muchos alumnos), anclamos arriba y permitimos scroll */
+    @apply fixed inset-0 bg-black/40 flex items-start justify-center p-4 overflow-auto;
 }
 
 .avisos-modal {
-    @apply w-full max-w-2xl rounded bg-white p-4;
+    /* Layout de modal con header fijo y cuerpo scrolleable */
+    @apply w-full max-w-2xl rounded bg-white p-4 flex flex-col max-h-[90vh] overflow-hidden;
 }
 
 .avisos-modal-header {
     @apply flex items-center justify-between gap-2 mb-3;
+}
+
+.avisos-modal-body {
+    @apply flex-1 overflow-auto min-h-0;
 }
 
 .avisos-modal-title {
