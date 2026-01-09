@@ -59,7 +59,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
                 onClick={handleManageProfiles}
                 className="w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-text-dark transition-colors font-semibold"
               >
-                {t('settings.profiles.create_new_button')}
+                {t('settings.profiles.manage_button')}
               </button>
             </div>
           </div>

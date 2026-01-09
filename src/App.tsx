@@ -187,6 +187,7 @@ const DesktopUI: React.FC<{
                 <Toolbar
                     pinnedWidgets={activeProfile.pinnedWidgets}
                     onWidgetClick={addWidget}
+                    onWidgetsClick={() => openSettingsTab('widgets')}
                     onSettingsClick={() => openSettingsTab('general')}
                 />
             )}

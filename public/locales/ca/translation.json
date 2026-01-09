@@ -29,7 +29,7 @@
       "delete_confirm": "Estàs segur que vols eliminar el perfil \"{{name}}\"?",
       "save_current_title": "Desar la Configuració Actual com a Nou Perfil",
       "new_profile_placeholder": "Nom del nou perfil...",
-      "create_new_button": "Crear nou perfil",
+      "manage_button": "Gestionar perfils",
       "save_button": "Desar",
       "saved_profiles_title": "Perfils Desats",
       "active_button": "Actiu",

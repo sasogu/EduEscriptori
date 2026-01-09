@@ -28,7 +28,7 @@
       "delete_confirm": "Ziur zaude \"{{name}}\" profila ezabatu nahi duzula?",
       "save_current_title": "Gorde uneko konfigurazioa profil berri gisa",
       "new_profile_placeholder": "Profil berriaren izena...",
-      "create_new_button": "Sortu profil berria",
+      "manage_button": "Profilak kudeatu",
       "save_button": "Gorde",
       "saved_profiles_title": "Gordetako profilak",
       "active_button": "Aktibo",

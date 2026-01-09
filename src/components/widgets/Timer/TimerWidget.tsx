@@ -40,26 +40,6 @@ export const TimerWidget: FC = () => {
 
     useEffect(handleTimeChange, [minutesInput, secondsInput]);
 
-    useEffect(() => {
-        const container = displayRef.current;
-        if (!container) return;
-
-        const updateSize = () => {
-            const { width, height } = container.getBoundingClientRect();
-            const nextSize = Math.max(32, Math.min(width * 0.3, height * 0.7));
-            const roundedSize = Math.floor(nextSize);
-            if (roundedSize !== lastFontSizeRef.current) {
-                lastFontSizeRef.current = roundedSize;
-                setTimeFontSize(roundedSize);
-            }
-        };
-
-        updateSize();
-        const resizeObserver = new ResizeObserver(updateSize);
-        resizeObserver.observe(container);
-        return () => resizeObserver.disconnect();
-    }, []);
-
     const toggleTimer = () => {
         if (totalDuration <= 0) return;
         if (remainingSeconds === 0) {
@@ -79,11 +59,40 @@ export const TimerWidget: FC = () => {
         return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     };
 
+    const displayText = remainingSeconds === 0 && !isActive
+        ? t('widgets.timer.finished')
+        : formatTime(remainingSeconds);
+
+    useEffect(() => {
+        const container = displayRef.current;
+        if (!container) return;
+
+        const updateSize = () => {
+            const { width, height } = container.getBoundingClientRect();
+            const maxWidth = width * 0.95;
+            const baseSize = Math.max(24, Math.min(width * 0.3, height * 0.7));
+            const estimatedTextWidth = displayText.length * baseSize * 0.62;
+            const scaledSize = estimatedTextWidth > maxWidth
+                ? baseSize * (maxWidth / estimatedTextWidth)
+                : baseSize;
+            const roundedSize = Math.floor(Math.max(20, scaledSize));
+            if (roundedSize !== lastFontSizeRef.current) {
+                lastFontSizeRef.current = roundedSize;
+                setTimeFontSize(roundedSize);
+            }
+        };
+
+        updateSize();
+        const resizeObserver = new ResizeObserver(updateSize);
+        resizeObserver.observe(container);
+        return () => resizeObserver.disconnect();
+    }, [displayText]);
+
     return (
         <div className="flex flex-col items-center justify-center h-full text-text-dark p-4 overflow-hidden">
             <div className="flex-1 w-full flex items-center justify-center" ref={displayRef}>
                 <div
-                    className="font-bold font-mono leading-none"
+                    className="font-bold font-mono leading-none text-center whitespace-nowrap max-w-full"
                     style={{
                         fontSize: `${timeFontSize}px`,
                         color: 'var(--color-text-light)',
@@ -91,7 +100,7 @@ export const TimerWidget: FC = () => {
                         WebkitTextStroke: '1px rgba(0, 0, 0, 0.45)',
                     }}
                 >
-                    {remainingSeconds === 0 && !isActive ? t('widgets.timer.finished') : formatTime(remainingSeconds)}
+                    {displayText}
                 </div>
             </div>
             

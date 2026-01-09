@@ -29,7 +29,7 @@
       "delete_confirm": "¿Estás seguro de que quieres eliminar el perfil \"{{name}}\"?",
       "save_current_title": "Guardar Configuración Actual como Nuevo Perfil",
       "new_profile_placeholder": "Nombre del nuevo perfil...",
-      "create_new_button": "Crear nuevo perfil",
+      "manage_button": "Gestionar perfiles",
       "save_button": "Guardar",
       "saved_profiles_title": "Perfiles Guardados",
       "active_button": "Activo",

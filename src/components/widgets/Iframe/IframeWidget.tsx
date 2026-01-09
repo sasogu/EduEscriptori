@@ -41,7 +41,7 @@ export const IframeWidget: FC = () => {
             src={url}
             title={t('widgets.iframe.embedded_content')}
             className="embedded-iframe"
-            sandbox="allow-scripts allow-forms allow-popups"
+            sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
           />
         ) : (
           <div className="placeholder">

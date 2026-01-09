@@ -39,12 +39,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   }, [isOpen, initialTab]);
 
   const filteredWidgets = useMemo(() => {
-    if (!searchTerm) {
-      return Object.values(WIDGET_REGISTRY);
-    }
-    return Object.values(WIDGET_REGISTRY).filter(widget =>
-      t(widget.title).toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const normalizedSearch = searchTerm.toLowerCase();
+    const results = Object.values(WIDGET_REGISTRY).filter(widget => {
+      if (!searchTerm) return true;
+      return t(widget.title).toLowerCase().includes(normalizedSearch);
+    });
+    return results.sort((a, b) => t(a.title).localeCompare(t(b.title)));
   }, [searchTerm, t]);
 
   const MAX_WIDGETS = 20;

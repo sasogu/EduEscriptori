@@ -29,7 +29,7 @@
       "delete_confirm": "Are you sure you want to delete the profile \"{{name}}\"?",
       "save_current_title": "Save Current Settings as a New Profile",
       "new_profile_placeholder": "New profile name...",
-      "create_new_button": "Create new profile",
+      "manage_button": "Manage profiles",
       "save_button": "Save",
       "saved_profiles_title": "Saved Profiles",
       "active_button": "Active",

@@ -29,7 +29,7 @@
       "delete_confirm": "Sei sicuro di voler eliminare il profilo \"{{name}}\"?",
       "save_current_title": "Salva le impostazioni correnti come nuovo profilo",
       "new_profile_placeholder": "Nome del nuovo profilo...",
-      "create_new_button": "Crea nuovo profilo",
+      "manage_button": "Gestisci profili",
       "save_button": "Salva",
       "saved_profiles_title": "Profili salvati",
       "active_button": "Attivo",
