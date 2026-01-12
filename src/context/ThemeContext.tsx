@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from 'react';
+import { defaultWallpaperValue } from '../utils/wallpapers';
 
 // 1. Definimos la estructura del tema.
-interface Theme {
+export interface Theme {
   '--color-bg': string;
   '--color-widget-bg': string;
   '--color-widget-header': string;
@@ -10,6 +11,8 @@ interface Theme {
   '--color-text-dark': string;
   '--color-border': string;
   '--wallpaper': string;
+  showDateTime: boolean;
+  showSystemStats: boolean;
 }
 
 // 2. ACTUALIZAMOS los colores por defecto.
@@ -21,7 +24,9 @@ export const defaultTheme: Theme = {
   '--color-text-light': '#FCF8DD',
   '--color-text-dark': '#1a202c',
   '--color-border': '#FFFFFF',
-  '--wallpaper': 'none',
+  '--wallpaper': defaultWallpaperValue,
+  showDateTime: true,
+  showSystemStats: false,
 };
 
 // 3. Definimos lo que nuestro contexto va a proveer.

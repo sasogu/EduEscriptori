@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, Info, FileText, Settings, Users, Image, LayoutGrid, X, Star, HelpCircle, Layers, GripVertical } from 'lucide-react';
+import { BookOpen, Info, FileText, Settings, Users, Image, LayoutGrid, X, Star, HelpCircle, GripVertical } from 'lucide-react';
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, closestCenter, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -22,7 +22,7 @@ type StartMenuProps = {
     onAddFavorite: (widgetId: string) => void;
     pinnedWidgets: string[];
     anchorRect?: DOMRect | null;
-    anchorRef?: RefObject<HTMLButtonElement>;
+    anchorRef?: RefObject<HTMLButtonElement | null>;
 };
 
 type MenuPosition = {

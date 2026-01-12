@@ -366,7 +366,8 @@ const DesktopUI: React.FC<{
     const storageUsed = storageEstimate.usage;
     const storageQuota = storageEstimate.quota;
     const storageFree = storageUsed != null && storageQuota != null ? Math.max(0, storageQuota - storageUsed) : null;
-    const memoryGb = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory : null;
+    const navigatorWithMemory = navigator as Navigator & { deviceMemory?: number };
+    const memoryGb = typeof navigatorWithMemory.deviceMemory === 'number' ? navigatorWithMemory.deviceMemory : null;
     const cpuCores = typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : null;
     const storageQuotaRounded = getGbRounded(storageQuota);
     const storageFreeRounded = getGbRounded(storageFree);
