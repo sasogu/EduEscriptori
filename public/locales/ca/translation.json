@@ -113,7 +113,8 @@
     "clear_favorites": "Buidar favorits",
     "clear_favorites_confirm": "Vols buidar la llista de favorits?",
     "reorder_favorites": "Reordenar favorits",
-    "add_favorite": "Afegir als favorits"
+    "add_favorite": "Afegir als favorits",
+    "language_label": "Idioma"
   },
   "about": {
     "title": "Sobre el projecte",

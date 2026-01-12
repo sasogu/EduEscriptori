@@ -1,7 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, Info, FileText, Settings, Users, Image, LayoutGrid, X, Star, HelpCircle, GripVertical } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import {
+    BookOpen,
+    Info,
+    FileText,
+    Settings,
+    Users,
+    Image,
+    LayoutGrid,
+    X,
+    Star,
+    HelpCircle,
+    GripVertical,
+    Languages,
+    ClipboardList,
+    Clock,
+    Sigma,
+    PenTool,
+    Puzzle,
+    Hand,
+    Layers,
+} from 'lucide-react';
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, closestCenter, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -30,15 +51,20 @@ type MenuPosition = {
     bottom: number;
 };
 
-const categoryColors: Record<string, string> = {
-    organization: 'bg-emerald-500',
-    time: 'bg-blue-500',
-    math_science: 'bg-teal-500',
-    resources: 'bg-amber-500',
-    interaction: 'bg-rose-500',
-    logic_games: 'bg-purple-500',
-    gestures: 'bg-orange-500',
-    other: 'bg-gray-500',
+type CategoryIconConfig = {
+    Icon: LucideIcon;
+    className: string;
+};
+
+const categoryIcons: Record<string, CategoryIconConfig> = {
+    organization: { Icon: ClipboardList, className: 'bg-emerald-100 text-emerald-700' },
+    time: { Icon: Clock, className: 'bg-blue-100 text-blue-700' },
+    math_science: { Icon: Sigma, className: 'bg-teal-100 text-teal-700' },
+    resources: { Icon: PenTool, className: 'bg-amber-100 text-amber-700' },
+    interaction: { Icon: Users, className: 'bg-rose-100 text-rose-700' },
+    logic_games: { Icon: Puzzle, className: 'bg-purple-100 text-purple-700' },
+    gestures: { Icon: Hand, className: 'bg-orange-100 text-orange-700' },
+    other: { Icon: Layers, className: 'bg-gray-100 text-gray-700' },
 };
 
 const MAX_FAVORITES = 20;
@@ -58,10 +84,12 @@ export const StartMenu: React.FC<StartMenuProps> = ({
     anchorRect,
     anchorRef,
 }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const menuRef = useRef<HTMLDivElement>(null);
+    const leftColumnRef = useRef<HTMLDivElement>(null);
     const searchRef = useRef<HTMLInputElement>(null);
     const favoriteMenuRef = useRef<HTMLDivElement>(null);
+    const languageMenuRef = useRef<HTMLDivElement>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [menuPosition, setMenuPosition] = useState<MenuPosition | null>(null);
     const [activeSection, setActiveSection] = useState<'favorites' | 'shortcuts' | 'widgets' | 'help'>('widgets');
@@ -72,6 +100,10 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         y: 0,
         widgetId: null,
     });
+    const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
+    const [leftColumnHeight, setLeftColumnHeight] = useState<number | null>(null);
+    const [needsCategoryScroll, setNeedsCategoryScroll] = useState(false);
+    const [menuHeight, setMenuHeight] = useState<number | null>(null);
 
     const widgetList = useMemo(() => Object.values(WIDGET_REGISTRY), []);
     const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -87,6 +119,10 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         [pinnedWidgetIds]
     );
     const favoriteIdSet = useMemo(() => new Set(pinnedWidgetIds), [pinnedWidgetIds]);
+    const visibleCategories = useMemo(
+        () => widgetsByCategory.filter((category) => category.widgets.length > 0),
+        [widgetsByCategory]
+    );
 
     useEffect(() => {
         if (!isOpen) return;
@@ -108,11 +144,11 @@ export const StartMenu: React.FC<StartMenuProps> = ({
     useEffect(() => {
         if (!isOpen) {
             setFavoriteMenu({ isOpen: false, x: 0, y: 0, widgetId: null });
+            setIsLanguageMenuOpen(false);
         }
     }, [isOpen]);
 
     useEffect(() => {
-        const visibleCategories = widgetsByCategory.filter((category) => category.widgets.length > 0);
         if (visibleCategories.length === 0) {
             setActiveCategoryId(null);
             return;
@@ -120,7 +156,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         if (!activeCategoryId || !visibleCategories.some((category) => category.id === activeCategoryId)) {
             setActiveCategoryId(visibleCategories[0].id);
         }
-    }, [activeCategoryId, widgetsByCategory]);
+    }, [activeCategoryId, visibleCategories]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -177,6 +213,25 @@ export const StartMenu: React.FC<StartMenuProps> = ({
     }, [favoriteMenu.isOpen]);
 
     useEffect(() => {
+        if (!isLanguageMenuOpen) return;
+        const handlePointerDown = (event: MouseEvent) => {
+            if (languageMenuRef.current && languageMenuRef.current.contains(event.target as Node)) return;
+            setIsLanguageMenuOpen(false);
+        };
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setIsLanguageMenuOpen(false);
+            }
+        };
+        window.addEventListener('mousedown', handlePointerDown);
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('mousedown', handlePointerDown);
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isLanguageMenuOpen]);
+
+    useEffect(() => {
         if (!isOpen || !menuPosition) return;
         const menu = menuRef.current;
         if (!menu) return;
@@ -200,6 +255,32 @@ export const StartMenu: React.FC<StartMenuProps> = ({
             setMenuPosition({ left: nextLeft, bottom: nextBottom });
         }
     }, [isOpen, menuPosition]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        const update = () => {
+            const header = menuRef.current?.querySelector('[data-start-menu-header="true"]') as HTMLElement | null;
+            const search = menuRef.current?.querySelector('[data-start-menu-search="true"]') as HTMLElement | null;
+            const left = leftColumnRef.current;
+            if (!header || !search || !left) return;
+            const paddingTopBottom = 24; // py-3 in body container
+            const headerHeight = header.getBoundingClientRect().height;
+            const searchHeight = search.getBoundingClientRect().height;
+            const maxHeight = Math.floor(window.innerHeight * 0.72);
+            const availableColumnsHeight = Math.max(0, maxHeight - headerHeight - searchHeight - paddingTopBottom);
+            const leftContentHeight = left.scrollHeight;
+            const columnsHeight = Math.min(leftContentHeight, availableColumnsHeight);
+            setLeftColumnHeight(columnsHeight);
+            setNeedsCategoryScroll(leftContentHeight > availableColumnsHeight + 1);
+            setMenuHeight(headerHeight + searchHeight + paddingTopBottom + columnsHeight);
+        };
+        const frame = requestAnimationFrame(update);
+        window.addEventListener('resize', update);
+        return () => {
+            cancelAnimationFrame(frame);
+            window.removeEventListener('resize', update);
+        };
+    }, [isOpen, visibleCategories, i18n.language]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -276,7 +357,6 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         handleWidgetAdd(firstWidget.id);
     };
 
-    const visibleCategories = widgetsByCategory.filter((category) => category.widgets.length > 0);
     const activeCategory = activeCategoryId
         ? visibleCategories.find((category) => category.id === activeCategoryId) || null
         : null;
@@ -295,7 +375,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                         const nextY = rect ? event.clientY - rect.top : event.clientY;
                         setFavoriteMenu({ isOpen: true, x: nextX, y: nextY, widgetId: widget.id });
                     }}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg border transition text-left shadow-sm min-w-0 ${highlightFavorites && favoriteIdSet.has(widget.id) ? 'bg-amber-50 border-amber-300' : 'bg-white/90 hover:bg-amber-50 border-gray-200'}`}
+                    className={`w-full flex items-center gap-3 px-3 py-[0.45rem] rounded-lg border transition text-left shadow-sm min-w-0 ${highlightFavorites && favoriteIdSet.has(widget.id) ? 'bg-amber-50 border-amber-300' : 'bg-white/90 hover:bg-amber-50 border-gray-200'}`}
                     title={t(widget.title)}
                 >
                     <span className="text-2xl">{widget.icon}</span>
@@ -313,13 +393,109 @@ export const StartMenu: React.FC<StartMenuProps> = ({
     return (
         <div
             ref={menuRef}
-            className="fixed z-[10001] w-[min(30rem,calc(100vw-1rem))] h-[72vh] max-h-[72vh] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200 flex flex-col"
-            style={{ left: menuPosition.left, bottom: menuPosition.bottom }}
+            className="fixed z-[10001] w-[min(30rem,calc(100vw-1rem))] max-h-[72vh] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden"
+            style={{
+                left: menuPosition.left,
+                bottom: menuPosition.bottom,
+                height: menuHeight ? `${menuHeight}px` : undefined,
+            }}
         >
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-white to-amber-50/70 rounded-t-2xl">
+            <div
+                data-start-menu-header="true"
+                className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-white to-amber-50/70 rounded-t-2xl"
+            >
                 <div className="flex items-center gap-2">
                     <img src={withBaseUrl('escritorio-digital.png')} alt={t('toolbar.start')} width="22" height="22" />
                     <h3 className="text-base font-semibold text-text-dark">{t('start_menu.title')}</h3>
+                </div>
+                <div className="relative flex items-center gap-2 text-gray-600">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setActiveSection('favorites');
+                        }}
+                        className={`p-2 rounded-full border transition ${
+                            activeSection === 'favorites'
+                                ? 'bg-amber-100 border-amber-300 text-amber-700'
+                                : 'bg-white/80 border-gray-200 hover:bg-amber-50'
+                        }`}
+                        title={t('start_menu.favorites')}
+                        aria-label={t('start_menu.favorites')}
+                    >
+                        <Star size={16} />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setActiveSection('shortcuts');
+                        }}
+                        className={`p-2 rounded-full border transition ${
+                            activeSection === 'shortcuts'
+                                ? 'bg-amber-100 border-amber-300 text-amber-700'
+                                : 'bg-white/80 border-gray-200 hover:bg-amber-50'
+                        }`}
+                        title={t('context_menu.settings')}
+                        aria-label={t('context_menu.settings')}
+                    >
+                        <Settings size={16} />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setIsLanguageMenuOpen((prev) => !prev);
+                        }}
+                        className="p-2 rounded-full border bg-white/80 border-gray-200 hover:bg-amber-50 transition"
+                        title={t('start_menu.language_label')}
+                        aria-label={t('start_menu.language_label')}
+                    >
+                        <Languages size={16} />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setActiveSection('help');
+                        }}
+                        className={`p-2 rounded-full border transition ${
+                            activeSection === 'help'
+                                ? 'bg-amber-100 border-amber-300 text-amber-700'
+                                : 'bg-white/80 border-gray-200 hover:bg-amber-50'
+                        }`}
+                        title={t('start_menu.help')}
+                        aria-label={t('start_menu.help')}
+                    >
+                        <HelpCircle size={16} />
+                    </button>
+                    {isLanguageMenuOpen && (
+                        <div
+                            ref={languageMenuRef}
+                            className="absolute right-0 top-10 z-[10003] min-w-[160px] rounded-lg border border-gray-200 bg-white/95 shadow-xl p-1 text-sm text-text-dark"
+                        >
+                            {[
+                                { id: 'es', label: 'Español' },
+                                { id: 'ca', label: 'Català' },
+                                { id: 'eu', label: 'Euskara' },
+                                { id: 'gl', label: 'Galego' },
+                                { id: 'pt', label: 'Português' },
+                                { id: 'fr', label: 'Français' },
+                                { id: 'it', label: 'Italiano' },
+                                { id: 'de', label: 'Deutsch' },
+                                { id: 'en', label: 'English' },
+                            ].map((option) => (
+                                <button
+                                    key={option.id}
+                                    onClick={() => {
+                                        i18n.changeLanguage(option.id);
+                                        setIsLanguageMenuOpen(false);
+                                    }}
+                                    className={`w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 transition ${
+                                        i18n.language === option.id ? 'bg-amber-50 text-amber-800' : ''
+                                    }`}
+                                >
+                                    {option.label}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <button
                     onClick={onClose}
@@ -330,7 +506,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                     <X size={16} />
                 </button>
             </div>
-            <div className="px-4 py-3 border-b border-gray-200 bg-white/70">
+            <div data-start-menu-search="true" className="px-4 py-3 border-b border-gray-200 bg-white/70">
                 <div className="relative">
                     <input
                         ref={searchRef}
@@ -343,57 +519,45 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                     />
                 </div>
             </div>
-            <div className="flex-1 overflow-hidden px-4 py-3 bg-gradient-to-b from-white to-gray-50 min-h-0">
-                <div className="flex h-full min-h-0 gap-4">
-                    <div className="w-56 shrink-0 space-y-4">
-                        <div className="space-y-2">
-                            <button
-                                onClick={() => setActiveSection('favorites')}
-                                className={`w-full text-left px-3 py-2 rounded-lg text-[15px] font-semibold border transition flex items-center gap-2 ${activeSection === 'favorites' ? 'bg-accent text-text-dark border-transparent' : 'bg-white/90 hover:bg-amber-50 border-gray-200'}`}
-                            >
-                                <Star size={16} />
-                                {t('start_menu.favorites')}
-                            </button>
-                            <button
-                                onClick={() => setActiveSection('shortcuts')}
-                                className={`w-full text-left px-3 py-2 rounded-lg text-[15px] font-semibold border transition flex items-center gap-2 ${activeSection === 'shortcuts' ? 'bg-accent text-text-dark border-transparent' : 'bg-white/90 hover:bg-amber-50 border-gray-200'}`}
-                            >
-                                <Settings size={16} />
-                                {t('context_menu.settings')}
-                            </button>
-                            <button
-                                onClick={() => setActiveSection('help')}
-                                className={`w-full text-left px-3 py-2 rounded-lg text-[15px] font-semibold border transition flex items-center gap-2 ${activeSection === 'help' ? 'bg-accent text-text-dark border-transparent' : 'bg-white/90 hover:bg-amber-50 border-gray-200'}`}
-                            >
-                                <HelpCircle size={16} />
-                                {t('start_menu.help')}
-                            </button>
-                        </div>
-                        <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-2">
-                                {t('start_menu.widgets')}
-                            </p>
+            <div className="flex-1 overflow-hidden px-4 py-3 bg-gradient-to-b from-white to-gray-50">
+                <div className="flex items-start gap-4 h-full">
+                    <div ref={leftColumnRef} className="w-56 shrink-0 flex flex-col gap-4">
+                        <div
+                            className="pr-1"
+                            style={{
+                                maxHeight: leftColumnHeight ? `${leftColumnHeight}px` : undefined,
+                                overflowY: needsCategoryScroll ? 'auto' : 'visible',
+                            }}
+                        >
                             <div className="space-y-1">
-                                {visibleCategories.map((category) => (
-                                    <button
-                                        key={category.id}
-                                        onClick={() => {
-                                            setActiveSection('widgets');
-                                            setActiveCategoryId(category.id);
-                                        }}
-                                        className={`w-full text-left px-3 py-2 rounded-lg text-[13px] font-semibold border transition flex items-center gap-2 ${activeCategoryId === category.id && activeSection === 'widgets' ? 'bg-accent text-text-dark border-transparent' : 'bg-white/90 hover:bg-amber-50 border-gray-200'}`}
-                                    >
-                                        <span className={`h-2.5 w-2.5 rounded-full ${categoryColors[category.id] ?? 'bg-gray-400'}`} />
-                                        <span className="leading-tight">{t(category.titleKey)}</span>
-                                        <span className="ml-auto text-[10px] font-semibold text-gray-600">
-                                            {category.widgets.length}
-                                        </span>
-                                    </button>
-                                ))}
+                                {visibleCategories.map((category) => {
+                                    const iconConfig = categoryIcons[category.id] ?? categoryIcons.other;
+                                    return (
+                                        <button
+                                            key={category.id}
+                                            onClick={() => {
+                                                setActiveSection('widgets');
+                                                setActiveCategoryId(category.id);
+                                            }}
+                                            className={`w-full text-left px-3 py-2 rounded-lg text-[13px] font-semibold border transition flex items-center gap-2 ${activeCategoryId === category.id && activeSection === 'widgets' ? 'bg-accent text-text-dark border-transparent' : 'bg-white/90 hover:bg-amber-50 border-gray-200'}`}
+                                        >
+                                            <span className={`h-5 w-5 rounded-md flex items-center justify-center ${iconConfig.className}`}>
+                                                <iconConfig.Icon size={12} />
+                                            </span>
+                                            <span className="leading-tight">{t(category.titleKey)}</span>
+                                            <span className="ml-auto text-[10px] font-semibold text-gray-600">
+                                                {category.widgets.length}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 overflow-y-auto pr-1 min-h-0">
+                    <div
+                        className="flex-1 overflow-y-auto pr-1 h-full"
+                        style={leftColumnHeight ? { maxHeight: `${leftColumnHeight}px` } : undefined}
+                    >
                         {activeSection === 'favorites' && (
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
@@ -507,9 +671,6 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                         )}
                         {activeSection === 'widgets' && (
                             <div className="space-y-3">
-                                <p className="text-xs uppercase tracking-wide text-gray-500">
-                                    {showSearchResults ? t('start_menu.widgets') : t('start_menu.widgets')}
-                                </p>
                                 {showSearchResults ? (
                                     filteredWidgets.length > 0 ? (
                                         renderWidgetList(filteredWidgets, true)

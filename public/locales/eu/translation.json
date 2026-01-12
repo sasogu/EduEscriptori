@@ -112,7 +112,8 @@
     "clear_favorites": "Gogokoak hustu",
     "clear_favorites_confirm": "Gogokoen zerrenda hustu nahi duzu?",
     "reorder_favorites": "Gogokoak berrantolatu",
-    "add_favorite": "Gogokoetara gehitu"
+    "add_favorite": "Gogokoetara gehitu",
+    "language_label": "Hizkuntza"
   },
   "about": {
     "title": "Proiektuari buruz",

@@ -115,7 +115,8 @@
     "clear_favorites": "Esvaziar favoritos",
     "clear_favorites_confirm": "Deseja esvaziar a lista de favoritos?",
     "reorder_favorites": "Reordenar favoritos",
-    "add_favorite": "Adicionar aos favoritos"
+    "add_favorite": "Adicionar aos favoritos",
+    "language_label": "Idioma"
   },
   "about": {
     "title": "Sobre o projeto",

@@ -113,7 +113,8 @@
     "clear_favorites": "Clear favorites",
     "clear_favorites_confirm": "Do you want to clear the favorites list?",
     "reorder_favorites": "Reorder favorites",
-    "add_favorite": "Add to favorites"
+    "add_favorite": "Add to favorites",
+    "language_label": "Language"
   },
   "about": {
     "title": "About the project",

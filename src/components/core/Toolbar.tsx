@@ -23,7 +23,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 }) => {
   const { t } = useTranslation();
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
   const draggableIds = pinnedWidgets.filter((id) => WIDGET_REGISTRY[id]);
@@ -41,26 +41,28 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
   const SortablePinnedButton: React.FC<{ widgetId: string }> = ({ widgetId }) => {
     const widget = WIDGET_REGISTRY[widgetId];
-    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: widgetId });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: widgetId });
     if (!widget) return null;
     const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
+      transform: isDragging ? CSS.Transform.toString(transform) : undefined,
+      transition: isDragging ? transition : undefined,
     };
     return (
-      <button
-        ref={setNodeRef}
-        style={style}
-        onClick={() => onWidgetClick(widget.id)}
-        onContextMenu={(event) => onOpenContextMenu(event, widget.id)}
-        data-widget-button="true"
-        className="w-14 h-14 bg-accent text-2xl rounded-lg flex items-center justify-center hover:brightness-110 transition-all duration-200 hover:scale-110 flex-shrink-0"
-        title={t(widget.title)}
-        {...attributes}
-        {...listeners}
-      >
-        {widget.icon}
-      </button>
+      <div ref={setNodeRef} style={style} className="flex-shrink-0">
+        <button
+          onClick={() => onWidgetClick(widget.id)}
+          onContextMenu={(event) => onOpenContextMenu(event, widget.id)}
+          data-widget-button="true"
+          className="group w-14 h-14 bg-accent text-2xl rounded-lg flex items-center justify-center hover:brightness-110 hover:scale-105"
+          title={t(widget.title)}
+          {...attributes}
+          {...listeners}
+        >
+          <span className="transform-gpu group-hover:scale-110">
+            {widget.icon}
+          </span>
+        </button>
+      </div>
     );
   };
   const handleBarContextMenu = (event: React.MouseEvent) => {
