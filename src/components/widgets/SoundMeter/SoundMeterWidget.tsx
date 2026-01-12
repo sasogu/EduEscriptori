@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react'; // <-- Se ha separado la importación del tipo FC
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import { Mic, MicOff } from 'lucide-react';
 import './SoundMeter.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // ... (El resto del archivo no necesita cambios)
 type NoiseLevel = 'silence' | 'conversation' | 'noise';
@@ -32,7 +30,6 @@ const LEVEL_CONFIG: Record<NoiseLevel, LevelInfo> = {
     className: 'level-noise',
   },
 };
-
 
 export const SoundMeterWidget: FC = () => {
   const { t } = useTranslation();
@@ -138,15 +135,4 @@ export const SoundMeterWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'sound-meter',
-  title: 'widgets.sound_meter.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/SoundMeter.png')} alt={t('widgets.sound_meter.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 300, height: 300 },
-};
+export { widgetConfig } from './widgetConfig';

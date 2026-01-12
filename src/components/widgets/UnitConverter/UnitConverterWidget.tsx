@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { FC } from 'react';
-import type { WidgetConfig } from '../../../types';
 import { useTranslation } from 'react-i18next';
 import { ArrowRightLeft } from 'lucide-react';
 import './UnitConverter.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 type UnitMap = { [unit: string]: (value: number) => number };
 
@@ -151,14 +149,4 @@ export const UnitConverterWidget: FC = () => {
   );
 };
 
-const WidgetIcon: FC = () => {
-    const { t } = useTranslation();
-    return <img src={withBaseUrl('icons/UnitConverter.png')} alt={t('widgets.unit_converter.icon_alt')} width="52" height="52" />;
-}
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'unit-converter',
-  title: 'widgets.unit_converter.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 450, height: 200 },
-};
+export { widgetConfig } from './widgetConfig';

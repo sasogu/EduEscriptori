@@ -2,11 +2,9 @@ import { useState } from 'react'; // 'useEffect' ha sido eliminado de esta líne
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
-import type { WidgetConfig } from '../../../types';
 import Papa from 'papaparse';
 import { Users, Badge, UserPlus, Upload, Download, RotateCcw, AlertTriangle } from 'lucide-react';
 import './Attendance.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // --- Tipos de Datos ---
 interface BadgeInfo {
@@ -272,15 +270,4 @@ export const AttendanceWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'attendance',
-  title: 'widgets.attendance.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/Attendance.png')} alt={t('widgets.attendance.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 450, height: 600 },
-};
+export { widgetConfig } from './widgetConfig';

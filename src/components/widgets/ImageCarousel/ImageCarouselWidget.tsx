@@ -2,10 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
-import type { WidgetConfig } from '../../../types';
 import { Upload, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 import './ImageCarousel.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // El componente principal del carrusel de imágenes
 export const ImageCarouselWidget: FC = () => {
@@ -160,14 +158,5 @@ export const ImageCarouselWidget: FC = () => {
 };
 
 // Objeto de configuración del widget
-const WidgetIcon: FC = () => {
-  const { t } = useTranslation();
-  return <img src={withBaseUrl('icons/ImageCarousel.png')} alt={t('widgets.image_carousel.title')} width={52} height={52} />;
-};
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'image-carousel',
-  title: 'widgets.image_carousel.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 500, height: 400 },
-};
+export { widgetConfig } from './widgetConfig';

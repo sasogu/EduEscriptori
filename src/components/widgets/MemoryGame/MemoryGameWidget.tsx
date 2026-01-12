@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 // 'Shuffle' ha sido eliminado de esta línea
 import { Upload, RotateCcw } from 'lucide-react'; 
 import './MemoryGame.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // Interfaz para representar cada carta
 interface Card {
@@ -139,14 +137,4 @@ export const MemoryGameWidget: FC = () => {
   );
 };
 
-const WidgetIcon: FC = () => {
-  const { t } = useTranslation();
-  return <img src={withBaseUrl('icons/MemoryGame.png')} alt={t('widgets.memory_game.icon_alt')} width="52" height="52" />;
-}
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'memory-game',
-  title: 'widgets.memory_game.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 500, height: 550 },
-};
+export { widgetConfig } from './widgetConfig';

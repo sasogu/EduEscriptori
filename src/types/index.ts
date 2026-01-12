@@ -1,6 +1,8 @@
 // src/types/index.ts
 
-import type { FC, ReactNode } from 'react';
+import type { ComponentType, LazyExoticComponent, ReactNode } from 'react';
+
+export type WidgetComponent = ComponentType<any> | LazyExoticComponent<ComponentType<any>>;
 
 /**
  * Define la estructura de la configuración estática de un widget.
@@ -11,7 +13,7 @@ export interface WidgetConfig {
   title: string;
   icon: string | ReactNode;
   defaultSize: { width: number; height: number };
-  component: FC; // El componente de React como una función
+  component: WidgetComponent; // El componente de React como una función (cargado bajo demanda)
 }
 
 /**

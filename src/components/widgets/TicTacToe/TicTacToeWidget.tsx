@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import { RotateCcw, X, Circle } from 'lucide-react';
 import './TicTacToe.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // El componente principal del Tic-Tac-Toe
 export const TicTacToeWidget: FC = () => {
@@ -53,7 +51,6 @@ export const TicTacToeWidget: FC = () => {
       setScore(prevScore => ({ ...prevScore, [gameWinner as 'X' | 'O']: prevScore[gameWinner as 'X' | 'O'] + 1 }));
     }
   }, [board, winner, setScore]);
-
 
   const handleClick = (i: number) => {
     if (winner || board[i]) return;
@@ -120,15 +117,4 @@ export const TicTacToeWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'tic-tac-toe',
-  title: 'widgets.tic_tac_toe.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/TicTacToe.png')} alt={t('widgets.tic_tac_toe.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 380, height: 520 },
-};
+export { widgetConfig } from './widgetConfig';

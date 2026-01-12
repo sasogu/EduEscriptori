@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import { Trash2 } from 'lucide-react';
 import './GlobalClocks.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // --- Lista de Zonas Horarias (Formato IANA) ---
 const TIMEZONES = [
@@ -104,15 +102,4 @@ export const GlobalClocksWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'global-clocks',
-  title: 'widgets.global_clocks.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/GlobalClocks.png')} alt={t('widgets.global_clocks.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 350, height: 400 },
-};
+export { widgetConfig } from './widgetConfig';

@@ -1,10 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import { Play, Pause } from 'lucide-react';
 import './Metronome.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // El componente principal del Metrónomo
 export const MetronomeWidget: FC = () => {
@@ -111,15 +108,4 @@ export const MetronomeWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'metronome',
-  title: 'widgets.metronome.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/Metronome.png')} alt={t('widgets.metronome.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 300, height: 400 },
-};
+export { widgetConfig } from './widgetConfig';

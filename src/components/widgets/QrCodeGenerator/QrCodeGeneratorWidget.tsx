@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import type { FC } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import type { WidgetConfig } from '../../../types';
 import { QrCode } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import './QrCodeGenerator.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 export const QrCodeGeneratorWidget: FC = () => {
   const { t } = useTranslation();
@@ -51,14 +49,4 @@ export const QrCodeGeneratorWidget: FC = () => {
   );
 };
 
-const WidgetIcon: FC = () => {
-    const { t } = useTranslation();
-    return <img src={withBaseUrl('icons/QrCodeGenerator.png')} alt={t('widgets.qr_code_generator.icon_alt')} width="52" height="52" />;
-}
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'qr-code-generator',
-  title: 'widgets.qr_code_generator.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 350, height: 500 },
-};
+export { widgetConfig } from './widgetConfig';

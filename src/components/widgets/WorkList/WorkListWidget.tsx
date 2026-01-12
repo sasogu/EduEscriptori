@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { X, Edit, Download, Upload } from 'lucide-react';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import Papa from 'papaparse';
-import type { WidgetConfig } from '../../../types';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 interface Task {
   id: number;
@@ -190,15 +188,4 @@ export const WorkListWidget: React.FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-    id: 'work-list',
-    title: 'widgets.work_list.title',
-    icon: (() => {
-      const WidgetIcon: React.FC = () => {
-        const { t } = useTranslation();
-        return <img src={withBaseUrl('icons/WorkList.png')} alt={t('widgets.work_list.title')} width={52} height={52} />;
-      };
-      return <WidgetIcon />;
-    })(),
-    defaultSize: { width: 380, height: 400 },
-};
+export { widgetConfig } from './widgetConfig';

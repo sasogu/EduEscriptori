@@ -3,10 +3,8 @@
 import { useState } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import { Link } from 'lucide-react';
 import './IframeWidget.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 export const IframeWidget: FC = () => {
   const { t } = useTranslation();
@@ -54,14 +52,4 @@ export const IframeWidget: FC = () => {
   );
 };
 
-const WidgetIcon: FC = () => {
-  const { t } = useTranslation();
-  return <img src={withBaseUrl('icons/Iframe.png')} alt={t('widgets.iframe.title')} width={52} height={52} />;
-};
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'iframe',
-  title: 'widgets.iframe.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 600, height: 500 },
-};
+export { widgetConfig } from './widgetConfig';

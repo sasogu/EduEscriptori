@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import './ScientificCalculatorWidget.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // Layouts de botones (sin cambios)
 const basicLayout = [
@@ -280,15 +278,4 @@ export const ScientificCalculatorWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'scientific-calculator',
-  title: 'widgets.scientific_calculator.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/ScientificCalculator.png')} alt={t('widgets.scientific_calculator.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 400, height: 600 },
-};
+export { widgetConfig } from './widgetConfig';

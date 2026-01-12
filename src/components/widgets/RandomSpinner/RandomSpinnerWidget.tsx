@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react';
-import type { WidgetConfig } from '../../../types';
 import { Trash2, Plus, Play, Expand, Minimize, Upload } from 'lucide-react';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import { useTranslation } from 'react-i18next';
 import './RandomSpinner.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 interface SpinnerOption {
   text: string;
@@ -277,14 +275,4 @@ export const RandomSpinnerWidget: FC = () => {
   );
 };
 
-const WidgetIcon: FC = () => {
-    const { t } = useTranslation();
-    return <img src={withBaseUrl('icons/RandomSpinner.png')} alt={t('widgets.random_spinner.icon_alt')} width="52" height="52" />;
-}
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'random-spinner',
-  title: 'widgets.random_spinner.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 720, height: 420 },
-};
+export { widgetConfig } from './widgetConfig';

@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import { FolderOpen, FileText } from 'lucide-react';
-import { withBaseUrl } from '../../../utils/assetPaths';
 import { marked } from 'marked';
 import katex from 'katex';
 import './FileOpenerWidget.css';
@@ -210,15 +208,4 @@ export const FileOpenerWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'file-opener',
-  title: 'widgets.file_opener.title',
-  icon: (() => {
-    const WidgetIcon: FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/FileExplorer.png')} alt={t('widgets.file_opener.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 720, height: 520 },
-};
+export { widgetConfig } from './widgetConfig';

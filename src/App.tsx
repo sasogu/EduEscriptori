@@ -1,6 +1,6 @@
 // src/App.tsx
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WIDGET_REGISTRY } from './components/widgets';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -462,7 +462,15 @@ const DesktopUI: React.FC<{
                         onResizeStop={(_e, _direction, ref, _delta, position) => setActiveWidgets(prev => prev.map(w => (w.instanceId === widget.instanceId ? { ...w, size: { width: ref.style.width, height: ref.style.height }, position } : w)))}
                         onOpenContextMenu={(event) => handleContextMenu(event, undefined, true)}
                     >
-                        <Component />
+                        <Suspense
+                            fallback={
+                                <div className="flex items-center justify-center h-full text-sm text-gray-500">
+                                    {t('loading')}
+                                </div>
+                            }
+                        >
+                            <Component />
+                        </Suspense>
                     </WidgetWindow>
                 );
             })}

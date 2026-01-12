@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
-import { withBaseUrl } from '../../../utils/assetPaths';
 import { FolderOpen, Trash2, Eye, UploadCloud, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { unzipSync } from 'fflate';
 import './LocalWebWidget.css';
@@ -654,7 +652,6 @@ export const LocalWebWidget: FC = () => {
         event.target.value = '';
     };
 
-
     const handleDeleteSite = async (siteId: string) => {
         const confirm = window.confirm(t('widgets.local_web.confirm_delete'));
         if (!confirm) return;
@@ -820,15 +817,4 @@ export const LocalWebWidget: FC = () => {
     );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-    id: 'local-web',
-    title: 'widgets.local_web.title',
-    icon: (() => {
-        const WidgetIcon: FC = () => {
-            const { t } = useTranslation();
-            return <img src={withBaseUrl('icons/LocalWeb.png')} alt={t('widgets.local_web.title')} width={52} height={52} />;
-        };
-        return <WidgetIcon />;
-    })(),
-    defaultSize: { width: 900, height: 600 },
-};
+export { widgetConfig } from './widgetConfig';

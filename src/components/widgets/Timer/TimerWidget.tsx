@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react'; // <-- CORRECCIÓN 2: Importación de tipo
 import { useTranslation } from 'react-i18next';
 import { Play, Pause, RotateCw } from 'lucide-react';
-import type { WidgetConfig } from '../../../types';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 export const TimerWidget: FC = () => {
     const { t } = useTranslation();
@@ -125,15 +123,4 @@ export const TimerWidget: FC = () => {
     );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-    id: 'timer',
-    title: 'widgets.timer.title',
-    icon: (() => {
-      const WidgetIcon: React.FC = () => {
-        const { t } = useTranslation();
-        return <img src={withBaseUrl('icons/Timer.png')} alt={t('widgets.timer.title')} width={52} height={52} />;
-      };
-      return <WidgetIcon />;
-    })(),
-    defaultSize: { width: 300, height: 300 },
-};
+export { widgetConfig } from './widgetConfig';

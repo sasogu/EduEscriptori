@@ -2,8 +2,6 @@ import { useState, useMemo } from 'react'; // Corregido: 'React' no es necesario
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { WidgetConfig } from '../../../types';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // A. El Componente de React con toda la lógica
 export const CalendarWidget: FC = () => {
@@ -74,15 +72,5 @@ export const CalendarWidget: FC = () => {
 };
 
 // B. El objeto de configuración que permite la detección automática
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'calendar',
-  title: 'widgets.calendar.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/Calendar.png')} alt={t('widgets.calendar.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 320, height: 350 },
-};
+
+export { widgetConfig } from './widgetConfig';

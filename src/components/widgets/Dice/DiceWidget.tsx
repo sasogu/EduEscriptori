@@ -2,9 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dices, Info } from 'lucide-react';
-import type { WidgetConfig } from '../../../types';
 import './Dice.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // ... (Interfaz DieState sin cambios)
 interface DieState {
@@ -27,7 +25,6 @@ export const DiceWidget: FC = () => {
   useEffect(() => {
     audioRef.current = new Audio('/sounds/dice-142528.mp3');
   }, []);
-
 
   const rollDice = () => {
     // Aseguramos que el audio esté listo y no se esté reproduciendo
@@ -139,15 +136,5 @@ export const DiceWidget: FC = () => {
 };
 
 // ... (La configuración del widget no cambia)
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'dice',
-  title: 'widgets.dice.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/Dice.png')} alt={t('widgets.dice.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 400, height: 300 },
-};
+
+export { widgetConfig } from './widgetConfig';

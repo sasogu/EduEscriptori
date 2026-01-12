@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 // Importamos todos los iconos necesarios, incluyendo Type para la herramienta de texto y iconos de navegación
 import { Paintbrush, Eraser, Trash2, Pen, Highlighter, SprayCan, Image as ImageIcon, Save as SaveIcon, LineChart, Square, Circle, ArrowRight, Type, RotateCcw, Move } from 'lucide-react';
-import { withBaseUrl } from '../../../utils/assetPaths';
 // Asumiendo que WidgetConfig existe en tu proyecto. Si no, puedes quitar esta línea o definirla.
 
 // --- El Componente Principal del Widget de Dibujo ---
@@ -162,7 +161,6 @@ export const DrawingPadWidget: React.FC = () => {
     
     setHasBackupContent(true);
   }, [getBackupCanvas]);
-
 
   // Función auxiliar para obtener coordenadas de pantalla (para pan)
   const getScreenCoordinates = useCallback((event: React.MouseEvent<HTMLCanvasElement> | MouseEvent) => {
@@ -882,16 +880,5 @@ export const DrawingPadWidget: React.FC = () => {
 };
 
 // Se incluye widgetConfig para tu WIDGET_REGISTRY
-export const widgetConfig = {
-  id: 'drawing-pad',
-  title: 'widgets.drawing_pad.title',
-  // RUTA DEL ICONO PERSONALIZADA: Asegúrate de que paleta.png esté en public/icons/
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/paleta.png')} alt={t('widgets.drawing_pad.title')} className="w-8 h-8" />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 600, height: 450 },
-};
+
+export { widgetConfig } from './widgetConfig';
