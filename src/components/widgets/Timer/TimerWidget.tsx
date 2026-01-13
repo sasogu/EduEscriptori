@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react'; // <-- CORRECCIÓN 2: Importación de tipo
 import { useTranslation } from 'react-i18next';
 import { Play, Pause, RotateCw } from 'lucide-react';
-import type { WidgetConfig } from '../../../types';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 export const TimerWidget: FC = () => {
     const { t } = useTranslation();
@@ -30,13 +28,35 @@ export const TimerWidget: FC = () => {
         return () => clearInterval(interval);
     }, [isActive, remainingSeconds]);
 
-    useEffect(() => {
+    const handleTimeChange = () => {
         const total = (minutesInput * 60) + secondsInput;
         setTotalDuration(total);
         if (!isActive) {
             setRemainingSeconds(total);
         }
-    }, [minutesInput, secondsInput, isActive]);
+    };
+
+    useEffect(handleTimeChange, [minutesInput, secondsInput]);
+
+    useEffect(() => {
+        const container = displayRef.current;
+        if (!container) return;
+
+        const updateSize = () => {
+            const { width, height } = container.getBoundingClientRect();
+            const nextSize = Math.max(32, Math.min(width * 0.3, height * 0.7));
+            const roundedSize = Math.floor(nextSize);
+            if (roundedSize !== lastFontSizeRef.current) {
+                lastFontSizeRef.current = roundedSize;
+                setTimeFontSize(roundedSize);
+            }
+        };
+
+        updateSize();
+        const resizeObserver = new ResizeObserver(updateSize);
+        resizeObserver.observe(container);
+        return () => resizeObserver.disconnect();
+    }, []);
 
     const toggleTimer = () => {
         if (totalDuration <= 0) return;
@@ -57,40 +77,11 @@ export const TimerWidget: FC = () => {
         return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     };
 
-    const displayText = remainingSeconds === 0 && !isActive
-        ? t('widgets.timer.finished')
-        : formatTime(remainingSeconds);
-
-    useEffect(() => {
-        const container = displayRef.current;
-        if (!container) return;
-
-        const updateSize = () => {
-            const { width, height } = container.getBoundingClientRect();
-            const maxWidth = width * 0.95;
-            const baseSize = Math.max(24, Math.min(width * 0.3, height * 0.7));
-            const estimatedTextWidth = displayText.length * baseSize * 0.62;
-            const scaledSize = estimatedTextWidth > maxWidth
-                ? baseSize * (maxWidth / estimatedTextWidth)
-                : baseSize;
-            const roundedSize = Math.floor(Math.max(20, scaledSize));
-            if (roundedSize !== lastFontSizeRef.current) {
-                lastFontSizeRef.current = roundedSize;
-                setTimeFontSize(roundedSize);
-            }
-        };
-
-        updateSize();
-        const resizeObserver = new ResizeObserver(updateSize);
-        resizeObserver.observe(container);
-        return () => resizeObserver.disconnect();
-    }, [displayText]);
-
     return (
         <div className="flex flex-col items-center justify-center h-full text-text-dark p-4 overflow-hidden">
             <div className="flex-1 w-full flex items-center justify-center" ref={displayRef}>
                 <div
-                    className="font-bold font-mono leading-none text-center whitespace-nowrap max-w-full"
+                    className="font-bold font-mono leading-none"
                     style={{
                         fontSize: `${timeFontSize}px`,
                         color: 'var(--color-text-light)',
@@ -98,14 +89,14 @@ export const TimerWidget: FC = () => {
                         WebkitTextStroke: '1px rgba(0, 0, 0, 0.45)',
                     }}
                 >
-                    {displayText}
+                    {remainingSeconds === 0 && !isActive ? t('widgets.timer.finished') : formatTime(remainingSeconds)}
                 </div>
             </div>
             
             <div className="flex items-center gap-2 mb-4">
                 <input 
                     type="number" 
-                    className="w-20 text-center bg-custom-bg border-2 border-accent rounded p-1"
+                    className="w-20 text-center bg-white/85 border-2 border-accent rounded p-1 text-text-dark"
                     value={minutesInput}
                     onChange={e => setMinutesInput(Math.max(0, parseInt(e.target.value) || 0))}
                     disabled={isActive}
@@ -113,7 +104,7 @@ export const TimerWidget: FC = () => {
                 <span className="text-2xl font-bold">:</span>
                 <input 
                     type="number" 
-                    className="w-20 text-center bg-custom-bg border-2 border-accent rounded p-1"
+                    className="w-20 text-center bg-white/85 border-2 border-accent rounded p-1 text-text-dark"
                     value={secondsInput}
                     onChange={e => setSecondsInput(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
                     disabled={isActive}
@@ -124,7 +115,7 @@ export const TimerWidget: FC = () => {
                 <button onClick={toggleTimer} className="p-3 bg-accent rounded-full hover:bg-[#8ec9c9]">
                     {isActive ? <Pause size={24} /> : <Play size={24} />}
                 </button>
-                <button onClick={handleReset} className="p-3 bg-custom-bg border-2 border-accent rounded-full hover:bg-accent/50">
+                <button onClick={handleReset} className="p-3 bg-white/85 border-2 border-accent rounded-full hover:bg-accent/50">
                     <RotateCw size={24} />
                 </button>
             </div>
@@ -132,15 +123,4 @@ export const TimerWidget: FC = () => {
     );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-    id: 'timer',
-    title: 'widgets.timer.title',
-    icon: (() => {
-      const WidgetIcon: React.FC = () => {
-        const { t } = useTranslation();
-        return <img src={withBaseUrl('icons/Timer.png')} alt={t('widgets.timer.title')} width={52} height={52} />;
-      };
-      return <WidgetIcon />;
-    })(),
-    defaultSize: { width: 300, height: 300 },
-};
+export { widgetConfig } from './widgetConfig';

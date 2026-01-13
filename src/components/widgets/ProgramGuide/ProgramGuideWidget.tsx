@@ -1,83 +1,78 @@
-import { useEffect, useRef, useState } from 'react';
-import type { FC } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
-import { BookOpen } from 'lucide-react';
 import { marked } from 'marked';
+import { withBaseUrl } from '../../../utils/assetPaths';
 import './ProgramGuideWidget.css';
 
-const resolveGuideUrl = (lang: string) => {
-  const normalized = lang.split('-')[0];
-  return normalized === 'es'
-    ? '/Guia-Escritorio-Digital.md'
-    : `/Guia-Escritorio-Digital.${normalized}.md`;
+const guideFiles: Record<string, string> = {
+    es: 'Guia-Escritorio-Digital.md',
+    ca: 'Guia-Escritorio-Digital.ca.md',
+    eu: 'Guia-Escritorio-Digital.eu.md',
+    gl: 'Guia-Escritorio-Digital.gl.md',
+    en: 'Guia-Escritorio-Digital.en.md',
+    fr: 'Guia-Escritorio-Digital.fr.md',
+    it: 'Guia-Escritorio-Digital.it.md',
+    de: 'Guia-Escritorio-Digital.de.md',
+    pt: 'Guia-Escritorio-Digital.pt.md',
 };
 
-export const ProgramGuideWidget: FC = () => {
-  const { t, i18n } = useTranslation();
-  const [markdown, setMarkdown] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
+const getGuideFile = (language: string) => {
+    const base = language.split('-')[0];
+    return guideFiles[base] ?? guideFiles.es;
+};
 
-  useEffect(() => {
-    const loadGuide = async () => {
-      setIsLoading(true);
-      setHasError(false);
-      const primaryUrl = resolveGuideUrl(i18n.language);
-      try {
-        const response = await fetch(primaryUrl, { cache: 'no-store' });
-        if (!response.ok) {
-          if (primaryUrl !== '/Guia-Escritorio-Digital.md') {
-            const fallback = await fetch('/Guia-Escritorio-Digital.md', { cache: 'no-store' });
-            if (!fallback.ok) throw new Error('fallback failed');
-            setMarkdown(await fallback.text());
-          } else {
-            throw new Error('primary failed');
-          }
-        } else {
-          setMarkdown(await response.text());
-        }
-      } catch {
-        setHasError(true);
-        setMarkdown('');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+export const ProgramGuideWidget = () => {
+    const { t, i18n } = useTranslation();
+    const [content, setContent] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [hasError, setHasError] = useState(false);
 
-    loadGuide();
-  }, [i18n.language]);
+    const guideFile = useMemo(() => getGuideFile(i18n.language), [i18n.language]);
 
-  useEffect(() => {
-    if (!contentRef.current) return;
-    if (!markdown) {
-      contentRef.current.innerHTML = '';
-      return;
+    useEffect(() => {
+        let isMounted = true;
+        const loadGuide = async () => {
+            setIsLoading(true);
+            setHasError(false);
+            try {
+                const response = await fetch(withBaseUrl(guideFile), { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error('Guide not found');
+                }
+                const markdown = await response.text();
+                const html = marked.parse(markdown) as string;
+                if (isMounted) {
+                    setContent(html);
+                }
+            } catch {
+                if (isMounted) {
+                    setHasError(true);
+                }
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            }
+        };
+        loadGuide();
+        return () => {
+            isMounted = false;
+        };
+    }, [guideFile]);
+
+    if (isLoading) {
+        return <div className="program-guide-status">{t('loading')}</div>;
     }
-    contentRef.current.innerHTML = marked.parse(markdown) as string;
-  }, [markdown]);
 
-  return (
-    <div className="program-guide-widget">
-      <header className="program-guide-header">
-        <BookOpen size={20} />
-        <h3>{t('widgets.program_guide.title')}</h3>
-      </header>
-      <div className="program-guide-body">
-        {isLoading && <div className="program-guide-status">{t('loading')}</div>}
-        {hasError && !isLoading && (
-          <div className="program-guide-status">{t('widgets.program_guide.load_error')}</div>
-        )}
-        {!isLoading && !hasError && <div className="program-guide-content prose" ref={contentRef} />}
-      </div>
-    </div>
-  );
+    if (hasError) {
+        return <div className="program-guide-status">{t('widgets.program_guide.load_error')}</div>;
+    }
+
+    return (
+        <div className="program-guide-content">
+            <div className="prose prose-slate max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
+        </div>
+    );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'program-guide',
-  title: 'widgets.program_guide.title',
-  icon: <BookOpen size={40} />,
-  defaultSize: { width: 720, height: 520 },
-};
+export { widgetConfig } from './widgetConfig';

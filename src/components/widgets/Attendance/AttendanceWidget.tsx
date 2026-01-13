@@ -2,11 +2,9 @@ import { useState } from 'react'; // 'useEffect' ha sido eliminado de esta líne
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
-import type { WidgetConfig } from '../../../types';
 import Papa from 'papaparse';
 import { Users, Badge, UserPlus, Upload, Download, RotateCcw, AlertTriangle } from 'lucide-react';
 import './Attendance.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // --- Tipos de Datos ---
 interface BadgeInfo {
@@ -24,20 +22,6 @@ interface Student {
 }
 
 type AttendanceRecords = Record<string, Student[]>;
-
-interface AttendanceCsvRow {
-  id?: string;
-  name?: string;
-}
-
-interface AttendanceExportRow {
-  date: string;
-  id: number;
-  name: string;
-  status: Student['status'];
-  badges: string;
-  alerts: string;
-}
 
 // Constantes movidas dentro del componente para usar traducciones
 
@@ -141,7 +125,7 @@ export const AttendanceWidget: FC = () => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    Papa.parse<AttendanceCsvRow>(file, {
+    Papa.parse<any>(file, {
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
@@ -158,7 +142,7 @@ export const AttendanceWidget: FC = () => {
   };
 
   const handleExport = () => {
-    const dataToExport: AttendanceExportRow[] = [];
+    const dataToExport: any[] = [];
     Object.keys(records).sort().forEach(date => {
         records[date].forEach(s => {
             dataToExport.push({
@@ -286,15 +270,4 @@ export const AttendanceWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'attendance',
-  title: 'widgets.attendance.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/Attendance.png')} alt={t('widgets.attendance.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 450, height: 600 },
-};
+export { widgetConfig } from './widgetConfig';

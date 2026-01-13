@@ -1,0 +1,60 @@
+.file-opener-widget {
+  @apply w-full h-full flex flex-col bg-white text-text-dark;
+}
+
+.file-opener-header {
+  @apply flex items-center gap-2 px-4 py-2 border-b border-gray-200 bg-gray-50 text-sm;
+}
+
+.file-opener-spacer {
+  @apply flex-1;
+}
+
+.file-opener-button {
+  @apply inline-flex items-center justify-center px-3 py-1.5 rounded-lg bg-accent text-text-dark font-semibold hover:bg-[#8ec9c9] transition-colors text-sm;
+}
+
+.file-opener-body {
+  @apply flex-1 overflow-hidden flex items-center justify-center p-4;
+}
+
+.file-opener-body-doc {
+  @apply items-start justify-start;
+}
+
+.file-opener-placeholder {
+  @apply text-center text-gray-600 flex flex-col items-center gap-2;
+}
+
+.file-opener-hint {
+  @apply text-xs text-gray-500;
+}
+
+.file-opener-image {
+  @apply max-w-full max-h-full object-contain;
+}
+
+.file-opener-embed {
+  @apply w-full h-full border-0;
+}
+
+.file-opener-video {
+  @apply max-w-full max-h-full;
+}
+
+.file-opener-audio {
+  @apply w-full;
+}
+
+.file-opener-text {
+  @apply w-full h-full overflow-auto whitespace-pre-wrap font-mono text-sm;
+}
+
+.file-opener-markdown {
+  @apply w-full h-full overflow-auto max-w-none;
+}
+
+.file-opener-markdown.prose {
+  max-width: none;
+  width: 100%;
+}

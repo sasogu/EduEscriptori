@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import type { FC } from 'react';
-import type { WidgetConfig } from '../../../types';
 import { Eye, Code } from 'lucide-react';
 import './HtmlSandboxWidget.css';
 import { useTranslation } from 'react-i18next';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 export const HtmlSandboxWidget: FC = () => {
   const { t } = useTranslation();
@@ -46,14 +44,4 @@ export const HtmlSandboxWidget: FC = () => {
   );
 };
 
-const WidgetIcon: FC = () => {
-  const { t } = useTranslation();
-  return <img src={withBaseUrl('icons/HtmlSandbox.png')} alt={t('widgets.html_sandbox.title')} width={52} height={52} />;
-};
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'html-sandbox',
-  title: 'widgets.html_sandbox.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 600, height: 450 },
-};
+export { widgetConfig } from './widgetConfig';

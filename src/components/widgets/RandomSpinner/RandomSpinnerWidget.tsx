@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react';
-import type { WidgetConfig } from '../../../types';
 import { Trash2, Plus, Play, Expand, Minimize, Upload } from 'lucide-react';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import { useTranslation } from 'react-i18next';
 import './RandomSpinner.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 interface SpinnerOption {
   text: string;
@@ -23,20 +21,7 @@ export const RandomSpinnerWidget: FC = () => {
     if (storedOptions === null) {
         const defaultOptions = t('widgets.random_spinner.default_options', { returnObjects: true });
         if (Array.isArray(defaultOptions)) {
-            const normalized = defaultOptions
-                .map((option) => {
-                    if (typeof option === 'string') {
-                        return { text: option };
-                    }
-                    if (option && typeof option === 'object' && 'text' in option && typeof option.text === 'string') {
-                        return { text: option.text };
-                    }
-                    return null;
-                })
-                .filter((option): option is { text: string } => option !== null);
-            if (normalized.length > 0) {
-                setOptions(normalized.map((opt) => ({ ...opt, color: getRandomColor() })));
-            }
+            setOptions(defaultOptions.map((opt: any) => ({ ...opt, color: getRandomColor() })));
         }
     }
   }, [t, setOptions]);
@@ -290,14 +275,4 @@ export const RandomSpinnerWidget: FC = () => {
   );
 };
 
-const WidgetIcon: FC = () => {
-    const { t } = useTranslation();
-    return <img src={withBaseUrl('icons/RandomSpinner.png')} alt={t('widgets.random_spinner.icon_alt')} width="52" height="52" />;
-}
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'random-spinner',
-  title: 'widgets.random_spinner.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 720, height: 420 },
-};
+export { widgetConfig } from './widgetConfig';

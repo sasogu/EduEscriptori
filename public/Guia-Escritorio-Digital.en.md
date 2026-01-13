@@ -4,7 +4,11 @@ Digital Desktop is a workboard with “windows” designed for the classroom. Yo
 
 ## How to use it
 
-- **Open a widget**: from the bottom bar or from the **Widget Library**.
+- **On-screen date and time**: shown in the top-right corner. You can disable it in **Tools → Appearance**.
+
+- **Start menu**: click the Start button in the bottom-left to open programs, favorites, settings, and help.
+
+- **Open a widget**: from the bottom bar, the **Start menu**, or the **Widget Library**.
 - **Close everything**: from the desktop context menu.
 - **Profiles**: create several desktops and switch between them.
 - **Backgrounds**: choose a preset background or upload your own.
@@ -21,24 +25,35 @@ Digital Desktop is a workboard with “windows” designed for the classroom. Yo
 ### Time and rhythm
 
 - **Timer**: countdown for stations, short exams, turn-based work, etc.
-- **Stopwatch.
+- **Stopwatch**: measure times (experiments, challenges, PE, dynamics).
 - **Metronome**: steady pulse. Useful for music, rhythm reading, class routines, or interval work.
 
 ### Math and science
 
 - **Scientific calculator**: common calculations in science and math.
-- **Unit converter for problems and labs.
-- **Markdown + LaTeX.
+- **Unit converter**: convert magnitudes for problems and labs.
+- **Markdown + LaTeX**: write notes with formulas and formatting.
 
 ### Whiteboard, writing, and resources
 
 - **Notepad**: quick notes for instructions, ideas, examples, lists, etc.
-- **Drawing pad.
-- **Image carousel.
+- **Drawing pad**: freehand drawing (sketches, graphs, concept maps, diagrams).
+- **Image carousel**: show a collection of images (plates, exercises, lab photos, maps…).
 - **Web viewer**: open a web page inside the desktop to use an online resource without switching tabs.
-- **PDF viewer**: open PDF files inside the desktop.
+- **Local web**: save websites in the browser (from ZIP or folder) and run them offline.
+- **File explorer**: open local files (PDF, images, text and Markdown, audio and video).
 - **Live viewer**: designed to show web content or external resources comfortably while explaining.
-- **HTML.
+- **HTML**: space to display prepared content.
+
+### Participation tools
+
+- **Simple voting**: real-time voting with instant results.
+- **Rating scale**: collect opinions with scales.
+- **Word cloud**: short responses in a dynamic cloud.
+- **Brainstorming and voting**: proposals and voting to prioritize.
+- **Interactive wall**: collaborative wall with post-it notes.
+- **QPlay**: interactive quiz in real time.
+- **BoardLive**: collaborative whiteboard in real time.
 
 ### Interaction, chance, and educational games
 

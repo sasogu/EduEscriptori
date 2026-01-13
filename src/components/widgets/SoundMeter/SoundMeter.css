@@ -1,9 +1,6 @@
 .sound-meter-widget {
   @apply w-full h-full flex items-center justify-center p-4 bg-gray-200 text-white overflow-hidden;
   container-type: size;
-  flex-direction: column;
-  gap: clamp(10px, 3cqw, 18px);
-  align-items: stretch;
 }
 
 /* --- Pantalla de Permisos (sin cambios) --- */
@@ -34,14 +31,9 @@
 
 /* --- Tarjetas de Nivel de Ruido --- */
 .level-card {
-  @apply w-full rounded-lg flex flex-col items-center justify-center gap-4 transition-all duration-300;
-  flex: 1 1 0;
-  min-height: 0;
-  min-height: 120px;
-  width: 100%;
+  @apply w-full h-full rounded-lg flex flex-col items-center justify-center gap-4 transition-all duration-300;
   transform: scale(1);
   animation: pop-in 0.3s ease-out;
-  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .level-card .emoji {
@@ -67,105 +59,6 @@
 }
 .level-noise {
   background-color: #ef4444; /* red-500 */
-}
-
-.meter-controls {
-  @apply w-full bg-white text-text-dark rounded-lg p-3;
-  display: grid;
-  gap: clamp(8px, 2cqw, 12px);
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
-  flex: 0 0 auto;
-}
-
-.controls-header {
-  @apply font-semibold text-text-dark;
-  font-size: 0.9rem;
-  font-size: clamp(0.85rem, 2.2cqw, 1.05rem);
-}
-
-.preset-buttons {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(6px, 1.8cqw, 10px);
-}
-
-.preset-button {
-  @apply bg-gray-100 text-text-dark font-semibold rounded-md;
-  padding: clamp(6px, 1.6cqw, 10px) clamp(8px, 2cqw, 12px);
-  font-size: 0.8rem;
-  font-size: clamp(0.75rem, 1.8cqw, 0.95rem);
-}
-
-.preset-button:hover {
-  @apply bg-gray-200;
-}
-
-.preset-button:active {
-  @apply bg-gray-300;
-}
-
-.control-row {
-  display: grid;
-  grid-template-columns: minmax(120px, 1fr) minmax(120px, 2.2fr) auto;
-  align-items: center;
-  gap: clamp(6px, 2cqw, 12px);
-  font-size: 0.85rem;
-  font-size: clamp(0.8rem, 2cqw, 1rem);
-}
-
-.control-row input[type="range"] {
-  width: 100%;
-  appearance: none;
-  height: 6px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #38bdf8, #22c55e);
-  outline: none;
-  cursor: pointer;
-}
-
-.control-row input[type="range"]::-webkit-slider-thumb {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #0f172a;
-  border: 2px solid #f8fafc;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
-}
-
-.control-row input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #0f172a;
-  border: 2px solid #f8fafc;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
-}
-
-.control-row input[type="range"]::-moz-range-track {
-  height: 6px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #38bdf8, #22c55e);
-}
-
-.control-value {
-  @apply font-mono text-text-dark;
-  min-width: 2ch;
-  text-align: right;
-}
-
-@container (max-width: 360px) {
-  .control-row {
-    grid-template-columns: 1fr;
-  }
-
-  .preset-buttons {
-    grid-template-columns: 1fr;
-  }
-
-  .control-value {
-    text-align: left;
-  }
 }
 
 @keyframes pop-in {

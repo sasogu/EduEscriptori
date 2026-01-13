@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { FC } from 'react';
-import type { WidgetConfig } from '../../../types';
 import { useTranslation } from 'react-i18next';
 import { ArrowRightLeft } from 'lucide-react';
 import './UnitConverter.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 type UnitMap = { [unit: string]: (value: number) => number };
 
@@ -67,7 +65,7 @@ export const UnitConverterWidget: FC = () => {
         else if (fromUnit === 'kelvin') baseValue = fromVal - 273.15;
         else baseValue = fromVal;
       } else {
-        const toBaseConverter = units[fromUnit];
+        const toBaseConverter = Object.entries(units).find(([key, _]) => key === fromUnit)![1];
         baseValue = fromVal / toBaseConverter(1);
       }
       const finalValue = units[toUnit](baseValue);
@@ -84,7 +82,7 @@ export const UnitConverterWidget: FC = () => {
             else if (toUnit === 'kelvin') baseValue = toVal - 273.15;
             else baseValue = toVal;
         } else {
-            const toBaseConverter = units[toUnit];
+            const toBaseConverter = Object.entries(units).find(([key, _]) => key === toUnit)![1];
             baseValue = toVal / toBaseConverter(1);
         }
         const finalValue = units[fromUnit](baseValue);
@@ -151,14 +149,4 @@ export const UnitConverterWidget: FC = () => {
   );
 };
 
-const WidgetIcon: FC = () => {
-    const { t } = useTranslation();
-    return <img src={withBaseUrl('icons/UnitConverter.png')} alt={t('widgets.unit_converter.icon_alt')} width="52" height="52" />;
-}
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'unit-converter',
-  title: 'widgets.unit_converter.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 450, height: 200 },
-};
+export { widgetConfig } from './widgetConfig';

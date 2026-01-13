@@ -1,15 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import { Play, Pause } from 'lucide-react';
 import './Metronome.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
-
-const getAudioContextConstructor = (): typeof AudioContext | undefined => {
-  const win = window as Window & { webkitAudioContext?: typeof AudioContext };
-  return win.AudioContext ?? win.webkitAudioContext;
-};
 
 // El componente principal del Metrónomo
 export const MetronomeWidget: FC = () => {
@@ -24,11 +16,8 @@ export const MetronomeWidget: FC = () => {
   // Genera el sonido del "tick"
   const playTick = (isFirstBeat: boolean) => {
     if (!audioContextRef.current) {
-        const AudioContextConstructor = getAudioContextConstructor();
-        if (!AudioContextConstructor) {
-          return;
-        }
-        audioContextRef.current = new AudioContextConstructor();
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        audioContextRef.current = new AudioContext();
     }
     const context = audioContextRef.current;
     const oscillator = context.createOscillator();
@@ -119,15 +108,4 @@ export const MetronomeWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'metronome',
-  title: 'widgets.metronome.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/Metronome.png')} alt={t('widgets.metronome.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 300, height: 400 },
-};
+export { widgetConfig } from './widgetConfig';

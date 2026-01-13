@@ -29,9 +29,23 @@ Este proyecto es un entorno de escritorio virtual construido con React, que perm
 23. **Temporizador:** Un contador regresivo que puedes configurar con minutos y segundos.
 24. **Tic-Tac-Toe:** El juego clásico de tres en raya para dos jugadores.
 25. **Visor Web:** Permite embeber y mostrar el contenido de una URL directamente en el escritorio, usando un iframe.
-26. **Visor PDF:** Abre archivos PDF dentro del escritorio.
-27. **Conexión en Directo:** Es un visor de aplicaciones web que carga una página externa, específicamente la aplicación "Conexión en Directo" de Juan José de Haro, dentro de una ventana en el escritorio.
-28. **Paleta de Dibujo:** Una completa herramienta de dibujo que permite trazos con diferentes pinceles (lápiz, rotulador, spray), insertar formas geométricas (líneas, rectángulos, círculos), añadir flechas y texto. 
+26. **Conexión en Directo:** Es un visor de aplicaciones web que carga una página externa, específicamente la aplicación "Conexión en Directo" de Juan José de Haro, dentro de una ventana en el escritorio.
+27. **Paleta de Dibujo:** Una completa herramienta de dibujo que permite trazos con diferentes pinceles (lápiz, rotulador, spray), insertar formas geométricas (líneas, rectángulos, círculos), añadir flechas y texto.
+28. **Votación simple:** Votaciones de opción múltiple en tiempo real con resultados instantáneos.
+29. **Escala de valoración:** Escalas tipo Likert, numéricas o semáforo para medir opiniones.
+30. **Nube de palabras:** Recopila ideas y las muestra como una nube visual.
+31. **Lluvia de ideas y votos:** Fase de propuestas + fase de votación para priorizar.
+32. **Muro interactivo:** Muro colaborativo con notas tipo post-it exportables.
+33. **QPlay:** Concurso interactivo con cuestionarios en tiempo real.
+34. **BoardLive:** Pizarra colaborativa en tiempo real con control por el anfitrión.
+
+## Uso básico
+
+- **Menú Inicio:** abre el menú con el botón Inicio de la esquina inferior izquierda.
+- **Buscar y filtrar:** usa el buscador para localizar programas por nombre.
+- **Categorías:** cambia de categoría en la columna izquierda.
+- **Favoritos y ajustes rápidos:** en la cabecera del menú puedes ir a Favoritos, Ajustes y Ayuda.
+- **Idioma:** cambia el idioma desde el icono de idiomas del menú Inicio.
 
 ## 🚀 Cómo Crear un Nuevo Widget
 
@@ -47,28 +61,27 @@ src/
     └── widgets/
         ├── ... (otros widgets)
         └── Reloj/
-            └── RelojWidget.tsx
+            ├── RelojWidget.tsx
+            └── widgetConfig.tsx
 ```
 
 ### 2. Anatomía de un Widget
 
-Un archivo de widget válido (p. ej., `RelojWidget.tsx`) debe contener dos exportaciones principales:
+Un widget válido se divide en dos archivos:
 
 #### A. El Componente del Widget
 
 Este es el componente de React que contiene toda la lógica y la interfaz de usuario del widget.
 
-* Debe ser una exportación nombrada que termine en `Widget` (ej. `export const RelojWidget: FC = () => { ... }`) o una exportación por defecto (`export default MiWidget`).
+* Debe ser una exportación nombrada que termine en `Widget` (ej. `export const RelojWidget = () => { ... }`) o una exportación por defecto (`export default MiWidget`).
 * El componente recibe el control total sobre el área interna de la ventana del widget.
 
 **Ejemplo de Componente:**
 ```tsx
 // src/components/widgets/Reloj/RelojWidget.tsx
 import React, { useState, useEffect } from 'react';
-import type { FC } from 'react';
-import type { WidgetConfig } from '../../../types';
 
-export const RelojWidget: FC = () => {
+export const RelojWidget = () => {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -83,38 +96,37 @@ export const RelojWidget: FC = () => {
   );
 };
 
-// No olvides exportar también la configuración
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  // ... ver abajo
-};
+export { widgetConfig } from './widgetConfig';
 ```
 
 #### B. El Objeto de Configuración
 
-Este es un objeto llamado `widgetConfig` que permite al sistema identificar y gestionar tu widget. Debe exportarse del mismo archivo que el componente.
+Este es un objeto llamado `widgetConfig` que permite al sistema identificar y gestionar tu widget. Se define en `widgetConfig.tsx`.
 
 El objeto debe tener la siguiente estructura, acorde a la interfaz `WidgetConfig`:
 
 * **`id`**: Un identificador único en formato `kebab-case`.
 * **`title`**: El nombre que se mostrará en la cabecera de la ventana del widget.
-* **`icon`**: Un emoji que se usará como icono en la barra de herramientas y en la librería.
+* **`icon`**: Un icono (emoji o componente de React) que se usará en la barra y la librería.
 * **`defaultSize`**: Un objeto `{ width: number, height: number }` que define el tamaño inicial del widget.
 
 **Ejemplo de Configuración:**
 ```tsx
-// Dentro de src/components/widgets/Reloj/RelojWidget.tsx
+// src/components/widgets/Reloj/widgetConfig.tsx
+import type { WidgetConfig } from '../../../types';
+import { Clock } from 'lucide-react';
 
 export const widgetConfig: Omit<WidgetConfig, 'component'> = {
   id: 'reloj',
   title: 'Reloj Digital',
-  icon: '🕰️',
+  icon: <Clock size={44} />,
   defaultSize: { width: 300, height: 150 },
 };
 ```
 
 ### 3. Registro Automático
 
-¡Eso es todo! No necesitas registrar el widget en ningún otro lugar. El archivo `src/components/widgets/index.ts` se encarga de importar dinámicamente cualquier archivo que termine en `*Widget.tsx` dentro del directorio de widgets, extrae el componente y su configuración, y lo añade al `WIDGET_REGISTRY`.
+¡Eso es todo! No necesitas registrar el widget en ningún otro lugar. El archivo `src/components/widgets/index.ts` se encarga de cargar la configuración y el componente de cada widget automáticamente y de forma diferida.
 
 Una vez que hayas creado tus archivos y reiniciado el servidor de desarrollo, tu nuevo widget estará disponible automáticamente en la **Librería de Widgets** (el modal de configuración).
 
@@ -177,8 +189,5 @@ Consulta más aplicaciones de esta comunidad en: <a href="https://vibe-coding-ed
 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener noreferrer">
 <img src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" alt="Licencia Creative Commons BY-SA 4.0" />
 </a>
-</p>
-<p>
-Código: <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU AGPLv3</a> (ver <a href="./LICENSE">LICENSE</a>).
 </p>
 </div>

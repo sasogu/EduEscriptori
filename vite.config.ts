@@ -3,10 +3,8 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
-export default defineConfig(({ command }) => ({
-    // En GitHub Pages la app suele servirse desde una subruta (p.ej. /<repo>/).
-    // Usar base relativa en build evita roturas por rutas absolutas.
-    base: command === 'build' ? './' : '/',
+export default defineConfig(() => ({
+    base: '/',
     plugins: [
         react(),
         VitePWA({

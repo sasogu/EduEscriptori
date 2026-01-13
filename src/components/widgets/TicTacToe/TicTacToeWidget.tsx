@@ -1,18 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import { RotateCcw, X, Circle } from 'lucide-react';
 import './TicTacToe.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // El componente principal del Tic-Tac-Toe
 export const TicTacToeWidget: FC = () => {
   const { t } = useTranslation();
-  type PlayerSymbol = 'X' | 'O';
-  type BoardCell = PlayerSymbol | null;
-  const [board, setBoard] = useState<BoardCell[]>(Array(9).fill(null));
+  const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [players, setPlayers] = useLocalStorage('tictactoe-players', { X: 'Jugador 1', O: 'Jugador 2' });
   
@@ -33,7 +29,7 @@ export const TicTacToeWidget: FC = () => {
     setPlayers({ ...players, [player]: name });
   };
   
-  const calculateWinner = useCallback((squares: BoardCell[]) => {
+  const calculateWinner = (squares: any[]) => {
     const lines = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
       [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
@@ -46,7 +42,7 @@ export const TicTacToeWidget: FC = () => {
       }
     }
     return null;
-  }, []);
+  };
 
   useEffect(() => {
     const gameWinner = calculateWinner(board);
@@ -54,8 +50,7 @@ export const TicTacToeWidget: FC = () => {
       setWinner(gameWinner);
       setScore(prevScore => ({ ...prevScore, [gameWinner as 'X' | 'O']: prevScore[gameWinner as 'X' | 'O'] + 1 }));
     }
-  }, [board, winner, setScore, calculateWinner]);
-
+  }, [board, winner, setScore]);
 
   const handleClick = (i: number) => {
     if (winner || board[i]) return;
@@ -122,15 +117,4 @@ export const TicTacToeWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'tic-tac-toe',
-  title: 'widgets.tic_tac_toe.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/TicTacToe.png')} alt={t('widgets.tic_tac_toe.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 380, height: 520 },
-};
+export { widgetConfig } from './widgetConfig';

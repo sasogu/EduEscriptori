@@ -19,14 +19,21 @@ interface WidgetWindowProps {
   isMaximized?: boolean;
   onToggleMinimize: () => void;
   onToggleMaximize: () => void;
+  onOpenContextMenu?: (event: React.MouseEvent) => void;
 }
 
 export const WidgetWindow: React.FC<WidgetWindowProps> = ({ 
     title, children, position, size, zIndex, onDragStop, onResizeStop, 
-    onClose, onFocus, isMinimized, isMaximized, onToggleMinimize, onToggleMaximize 
+    onClose, onFocus, isMinimized, isMaximized, onToggleMinimize, onToggleMaximize, onOpenContextMenu
 }) => {
-  
   const finalSize = isMinimized ? { ...size, height: 40 } : size;
+  const containerStyle: React.CSSProperties = {
+    zIndex,
+    opacity: isMinimized ? 0 : 1,
+    pointerEvents: isMinimized ? 'none' : 'auto',
+    transform: isMinimized ? 'scale(0.98)' : 'scale(1)',
+    transition: 'width 220ms ease, height 220ms ease, opacity 220ms ease, transform 220ms ease',
+  };
   
   return (
       <Rnd
@@ -38,8 +45,9 @@ export const WidgetWindow: React.FC<WidgetWindowProps> = ({
         minHeight={isMinimized ? 40 : 150}
         disableDragging={isMaximized}
         enableResizing={!isMaximized && !isMinimized}
-        style={{ zIndex }}
+        style={containerStyle}
         onMouseDown={onFocus}
+        onMouseDownCapture={onFocus}
         className="bg-widget-bg rounded-lg shadow-2xl border-2 border-widget-header relative"
         dragHandleClassName="widget-header-drag-handle"
         bounds="parent" 
@@ -49,13 +57,13 @@ export const WidgetWindow: React.FC<WidgetWindowProps> = ({
           <span className="widget-header-drag-handle flex-grow h-full cursor-move flex items-center">{title}</span>
           
           <div className="flex items-center gap-1">
-            <button onClick={onToggleMinimize} className="hover:bg-black/20 rounded-full p-1">
+            <button onClick={onToggleMinimize} onContextMenu={onOpenContextMenu} className="hover:bg-black/20 rounded-full p-1">
               <Minus size={18} />
             </button>
-            <button onClick={onToggleMaximize} className="hover:bg-black/20 rounded-full p-1">
+            <button onClick={onToggleMaximize} onContextMenu={onOpenContextMenu} className="hover:bg-black/20 rounded-full p-1">
               {isMaximized ? <Minimize size={18} /> : <Maximize size={18} />}
             </button>
-            <button onClick={onClose} className="hover:bg-black/20 rounded-full p-1">
+            <button onClick={onClose} onContextMenu={onOpenContextMenu} className="hover:bg-black/20 rounded-full p-1">
               <X size={18} />
             </button>
           </div>

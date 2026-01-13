@@ -1,28 +1,149 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useTheme } from '../../context/ThemeContext';
+import type { Theme } from '../../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import { wallpaperOptions, getWallpaperValue } from '../../utils/wallpapers';
 
 export const ThemeSettings: React.FC = () => {
   const { t } = useTranslation();
-  const { theme, setTheme, setWallpaper, resetTheme } = useTheme();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { theme, setTheme, defaultTheme } = useTheme();
+
+  type ThemePreset = {
+    id: string;
+    labelKey: string;
+    colors: Partial<Theme>;
+  };
 
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTheme({ ...theme, [name]: value });
   };
-  
-  const handleWallpaperUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        setWallpaper(`url(${result})`);
-      };
-      reader.readAsDataURL(file);
-    }
+
+  const themePresets: ThemePreset[] = [
+    {
+      id: 'classic',
+      labelKey: 'settings.theme.presets.classic',
+      colors: {
+        '--color-bg': defaultTheme['--color-bg'],
+        '--color-widget-bg': defaultTheme['--color-widget-bg'],
+        '--color-widget-header': defaultTheme['--color-widget-header'],
+        '--color-accent': defaultTheme['--color-accent'],
+        '--color-text-light': defaultTheme['--color-text-light'],
+        '--color-text-dark': defaultTheme['--color-text-dark'],
+        '--color-border': defaultTheme['--color-border'],
+      },
+    },
+    {
+      id: 'chalkboard',
+      labelKey: 'settings.theme.presets.chalkboard',
+      colors: {
+        '--color-bg': '#122B39',
+        '--color-widget-bg': '#1F4E5F',
+        '--color-widget-header': '#F4B860',
+        '--color-accent': '#F7D07A',
+        '--color-text-light': '#F7F4EA',
+        '--color-text-dark': '#0B1B21',
+        '--color-border': '#122B39',
+      },
+    },
+    {
+      id: 'slate',
+      labelKey: 'settings.theme.presets.slate',
+      colors: {
+        '--color-bg': '#232136',
+        '--color-widget-bg': '#3A355A',
+        '--color-widget-header': '#9E7FB2',
+        '--color-accent': '#F6C177',
+        '--color-text-light': '#F5F2FF',
+        '--color-text-dark': '#14111F',
+        '--color-border': '#232136',
+      },
+    },
+    {
+      id: 'sand',
+      labelKey: 'settings.theme.presets.sand',
+      colors: {
+        '--color-bg': '#FFF3D9',
+        '--color-widget-bg': '#FF7A5C',
+        '--color-widget-header': '#2B7A78',
+        '--color-accent': '#F5D547',
+        '--color-text-light': '#FFF8EA',
+        '--color-text-dark': '#2B1D0E',
+        '--color-border': '#F3E2BF',
+      },
+    },
+    {
+      id: 'ocean',
+      labelKey: 'settings.theme.presets.ocean',
+      colors: {
+        '--color-bg': '#E9F4FF',
+        '--color-widget-bg': '#2F80ED',
+        '--color-widget-header': '#1B3A57',
+        '--color-accent': '#FFB703',
+        '--color-text-light': '#F8F9FB',
+        '--color-text-dark': '#0E1A24',
+        '--color-border': '#D7E8FF',
+      },
+    },
+    {
+      id: 'confetti',
+      labelKey: 'settings.theme.presets.confetti',
+      colors: {
+        '--color-bg': '#FFF6F9',
+        '--color-widget-bg': '#FF6B6B',
+        '--color-widget-header': '#6BCB77',
+        '--color-accent': '#4D96FF',
+        '--color-text-light': '#FFFFFF',
+        '--color-text-dark': '#2B2D42',
+        '--color-border': '#FDE3EC',
+      },
+    },
+    {
+      id: 'sunrise',
+      labelKey: 'settings.theme.presets.sunrise',
+      colors: {
+        '--color-bg': '#FFE8D6',
+        '--color-widget-bg': '#FF7F50',
+        '--color-widget-header': '#6C5B7B',
+        '--color-accent': '#F9C74F',
+        '--color-text-light': '#FFF7EA',
+        '--color-text-dark': '#2D1E1E',
+        '--color-border': '#F6D3C1',
+      },
+    },
+    {
+      id: 'berry',
+      labelKey: 'settings.theme.presets.berry',
+      colors: {
+        '--color-bg': '#F6ECFF',
+        '--color-widget-bg': '#7B2CBF',
+        '--color-widget-header': '#FAD643',
+        '--color-accent': '#FF70A6',
+        '--color-text-light': '#FDF7FF',
+        '--color-text-dark': '#221133',
+        '--color-border': '#EAD9FF',
+      },
+    },
+    {
+      id: 'mint',
+      labelKey: 'settings.theme.presets.mint',
+      colors: {
+        '--color-bg': '#E8FFF7',
+        '--color-widget-bg': '#2A9D8F',
+        '--color-widget-header': '#264653',
+        '--color-accent': '#E9C46A',
+        '--color-text-light': '#F7FFFB',
+        '--color-text-dark': '#0E1F20',
+        '--color-border': '#D2F3E7',
+      },
+    },
+  ];
+
+  const applyPreset = (preset: ThemePreset) => {
+    setTheme((prevTheme) => ({ ...prevTheme, ...preset.colors }));
+  };
+
+  const isPresetActive = (preset: ThemePreset) => {
+    return Object.entries(preset.colors).every(([key, value]) => theme[key as keyof Theme] === value);
   };
 
   const colorOptions = [
@@ -33,10 +154,42 @@ export const ThemeSettings: React.FC = () => {
     { id: '--color-text-light', labelKey: 'text_light' },
     { id: '--color-text-dark', labelKey: 'text_dark' },
   ];
-  const availableWallpapers = wallpaperOptions;
 
   return (
     <div className="p-4 space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold">{t('settings.theme.presets_title')}</h3>
+        <p className="text-sm text-gray-600 mb-3">{t('settings.theme.presets_help')}</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {themePresets.map((preset) => {
+            const isActive = isPresetActive(preset);
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => applyPreset(preset)}
+                className={`text-left p-3 rounded-lg border transition-all ${
+                  isActive ? 'border-accent ring-2 ring-accent' : 'border-gray-200 hover:border-gray-400'
+                }`}
+                aria-pressed={isActive}
+              >
+                <div
+                  className="h-14 rounded-md overflow-hidden border border-black/10 mb-2"
+                  style={{ backgroundColor: preset.colors['--color-bg'] }}
+                >
+                  <div style={{ backgroundColor: preset.colors['--color-widget-header'] }} className="h-4" />
+                  <div className="flex h-10">
+                    <div style={{ backgroundColor: preset.colors['--color-widget-bg'] }} className="flex-1" />
+                    <div style={{ backgroundColor: preset.colors['--color-accent'] }} className="w-6" />
+                  </div>
+                </div>
+                <span className="text-sm font-semibold">{t(preset.labelKey)}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div>
         <h3 className="text-lg font-semibold mb-2">{t('settings.theme.theme_colors_title')}</h3>
         <div className="grid grid-cols-2 gap-4">
@@ -47,68 +200,14 @@ export const ThemeSettings: React.FC = () => {
                 type="color"
                 id={id}
                 name={id}
-                value={theme[id as keyof typeof theme]}
+                value={theme[id as keyof typeof theme] as string}
                 onChange={handleColorChange}
-                className="w-10 h-10 rounded-full border-none cursor-pointer"
+                className="theme-color-input"
               />
             </div>
           ))}
         </div>
       </div>
-
-      <div>
-        <h3 className="text-lg font-semibold mb-2">{t('settings.theme.wallpaper_title')}</h3>
-        <div className="grid grid-cols-3 gap-3 mb-4 max-h-56 overflow-y-auto pr-1">
-          {availableWallpapers.map((wallpaper) => {
-            const wallpaperValue = getWallpaperValue(wallpaper);
-            const isActive = wallpaper.urls.some(url => theme['--wallpaper'] === `url(${url})`);
-            return (
-              <button
-                key={wallpaper.id}
-                type="button"
-                onClick={() => setWallpaper(wallpaperValue)}
-                className={`h-20 rounded-lg border transition-all ${
-                  isActive ? 'border-accent ring-2 ring-accent' : 'border-gray-200 hover:border-gray-400'
-                }`}
-                style={{
-                  backgroundImage: `url(${wallpaper.previewUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-                aria-label={t('settings.theme.wallpaper_title')}
-              />
-            );
-          })}
-        </div>
-        <div className="flex gap-2">
-            <button
-                onClick={() => fileInputRef.current?.click()}
-                className="flex-1 font-semibold py-2 px-4 rounded-lg bg-accent text-text-dark hover:bg-[#8ec9c9] transition-colors"
-            >
-                {t('settings.theme.upload_image_button')}
-            </button>
-            <button
-                onClick={() => setWallpaper('none')}
-                className="flex-1 font-semibold py-2 px-4 rounded-lg bg-gray-300 text-text-dark hover:bg-gray-400 transition-colors"
-            >
-                {t('settings.theme.remove_wallpaper_button')}
-            </button>
-        </div>
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleWallpaperUpload}
-          accept="image/*"
-          className="hidden"
-        />
-      </div>
-      
-      <button
-        onClick={resetTheme}
-        className="w-full font-bold py-2 px-4 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors mt-4"
-        >
-        {t('settings.theme.reset_theme_button')}
-        </button>
     </div>
   );
 };

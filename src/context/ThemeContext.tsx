@@ -11,6 +11,8 @@ export interface Theme {
   '--color-text-dark': string;
   '--color-border': string;
   '--wallpaper': string;
+  showDateTime: boolean;
+  showSystemStats: boolean;
 }
 
 // 2. ACTUALIZAMOS los colores por defecto.
@@ -23,6 +25,8 @@ export const defaultTheme: Theme = {
   '--color-text-dark': '#1a202c',
   '--color-border': '#FFFFFF',
   '--wallpaper': defaultWallpaperValue,
+  showDateTime: true,
+  showSystemStats: false,
 };
 
 // 3. Definimos lo que nuestro contexto va a proveer.

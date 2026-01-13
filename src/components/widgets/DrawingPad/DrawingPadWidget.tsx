@@ -2,11 +2,10 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 // Importamos todos los iconos necesarios, incluyendo Type para la herramienta de texto y iconos de navegación
 import { Paintbrush, Eraser, Trash2, Pen, Highlighter, SprayCan, Image as ImageIcon, Save as SaveIcon, LineChart, Square, Circle, ArrowRight, Type, RotateCcw, Move } from 'lucide-react';
-import { withBaseUrl } from '../../../utils/assetPaths';
 // Asumiendo que WidgetConfig existe en tu proyecto. Si no, puedes quitar esta línea o definirla.
 
 // --- El Componente Principal del Widget de Dibujo ---
-export const DrawingPadWidget: React.FC = () => {
+export const DrawingPadWidget = () => {
   const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -162,7 +161,6 @@ export const DrawingPadWidget: React.FC = () => {
     
     setHasBackupContent(true);
   }, [getBackupCanvas]);
-
 
   // Función auxiliar para obtener coordenadas de pantalla (para pan)
   const getScreenCoordinates = useCallback((event: React.MouseEvent<HTMLCanvasElement> | MouseEvent) => {
@@ -349,7 +347,7 @@ export const DrawingPadWidget: React.FC = () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, [getBackupCanvas, redrawCanvasWithPan]);
+  }, []); // Sin dependencias para evitar bucles - todo se maneja internamente
 
   // Efecto para cambiar el modo de composición global del canvas (dibujar vs. borrar)
   useEffect(() => {
@@ -474,7 +472,7 @@ export const DrawingPadWidget: React.FC = () => {
         case 'rectangle':
           context.strokeRect(startX, startY, width, height);
           break;
-        case 'circle': {
+        case 'circle':
           const centerX = (startX + offsetX) / 2;
           const centerY = (startY + offsetY) / 2;
           const radiusX = Math.abs(width / 2);
@@ -483,8 +481,7 @@ export const DrawingPadWidget: React.FC = () => {
           context.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
           context.stroke();
           break;
-        }
-        case 'arrow': {
+        case 'arrow':
           context.beginPath();
           context.moveTo(startX, startY);
           context.lineTo(offsetX, offsetY);
@@ -495,7 +492,6 @@ export const DrawingPadWidget: React.FC = () => {
           // Aumentado el tamaño de la cabeza de flecha para que sea más visible
           drawArrowhead(context, offsetX, offsetY, angle, brushSize * 4); 
           break;
-        }
         default:
           break;
       }
@@ -573,7 +569,7 @@ export const DrawingPadWidget: React.FC = () => {
             case 'rectangle':
                 context.strokeRect(startX, startY, width, height);
                 break;
-            case 'circle': {
+            case 'circle':
                 const centerX = (startX + finalX) / 2;
                 const centerY = (startY + finalY) / 2;
                 const radiusX = Math.abs(width / 2);
@@ -582,8 +578,7 @@ export const DrawingPadWidget: React.FC = () => {
                 context.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
                 context.stroke();
                 break;
-            }
-            case 'arrow': {
+            case 'arrow':
                 context.beginPath();
                 context.moveTo(startX, startY);
                 context.lineTo(finalX, finalY);
@@ -593,7 +588,6 @@ export const DrawingPadWidget: React.FC = () => {
                 const angle = Math.atan2(finalY - startY, finalX - startX);
                 drawArrowhead(context, finalX, finalY, angle, brushSize * 4);
                 break;
-            }
             default:
                 break;
         }
@@ -886,16 +880,5 @@ export const DrawingPadWidget: React.FC = () => {
 };
 
 // Se incluye widgetConfig para tu WIDGET_REGISTRY
-export const widgetConfig = {
-  id: 'drawing-pad',
-  title: 'widgets.drawing_pad.title',
-  // RUTA DEL ICONO PERSONALIZADA: Asegúrate de que paleta.png esté en public/icons/
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/paleta.png')} alt={t('widgets.drawing_pad.title')} className="w-8 h-8" />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 600, height: 450 },
-};
+
+export { widgetConfig } from './widgetConfig';

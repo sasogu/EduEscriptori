@@ -23,6 +23,17 @@ Object.entries(wallpaperImports).forEach(([path, url]) => {
   grouped[id][size] = url;
 });
 
+const preferredOrder = [
+  'gemini-9lvikq9lvikq9lvi',
+  'gemini-16uf0k16uf0k16uf',
+  'gemini-louvkrlouvkrlouv',
+  'gemini-xiejfxiejfxiejfx',
+  'gemini-2ap5fj2ap5fj2ap5',
+  'gemini-yntaleyntaleynta',
+];
+
+const orderIndex = new Map(preferredOrder.map((id, index) => [id, index]));
+
 export const wallpaperOptions: WallpaperOption[] = Object.entries(grouped)
   .map(([id, urlsBySize]) => {
     const sizes = Object.keys(urlsBySize).map(Number).sort((a, b) => a - b);
@@ -35,7 +46,14 @@ export const wallpaperOptions: WallpaperOption[] = Object.entries(grouped)
       urls: sizes.map(size => urlsBySize[size]),
     };
   })
-  .sort((a, b) => a.id.localeCompare(b.id));
+  .sort((a, b) => {
+    const aIndex = orderIndex.get(a.id);
+    const bIndex = orderIndex.get(b.id);
+    if (aIndex != null && bIndex != null) return aIndex - bIndex;
+    if (aIndex != null) return -1;
+    if (bIndex != null) return 1;
+    return a.id.localeCompare(b.id);
+  });
 
 const getTargetWidth = () => {
   if (typeof window === 'undefined') return 1920;
@@ -57,6 +75,11 @@ export const wallpaperValues = new Set(
 
 export const isWallpaperValueValid = (value: string) => wallpaperValues.has(value);
 
-export const defaultWallpaperValue = wallpaperOptions[0]
-  ? getWallpaperValue(wallpaperOptions[0])
+const DEFAULT_WALLPAPER_ID = 'gemini-9lvikq9lvikq9lvi';
+
+const defaultWallpaperOption = wallpaperOptions.find(option => option.id === DEFAULT_WALLPAPER_ID)
+  ?? wallpaperOptions[0];
+
+export const defaultWallpaperValue = defaultWallpaperOption
+  ? getWallpaperValue(defaultWallpaperOption)
   : 'none';

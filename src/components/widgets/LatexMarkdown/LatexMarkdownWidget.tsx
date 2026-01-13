@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import { marked } from 'marked';
 import katex from 'katex';
 import { toPng } from 'html-to-image'; // para "Copiar como imagen"
@@ -11,7 +10,6 @@ import { Clipboard, Image as ImageIcon, FileDown, FileText } from 'lucide-react'
 
 import 'katex/dist/katex.min.css';
 import './LatexMarkdownWidget.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 type Mode = 'markdown' | 'latex';
 
@@ -85,7 +83,6 @@ export const LatexMarkdownWidget: FC = () => {
     };
   }, []);
 
-
   const showFeedback = (message: string) => {
     setFeedback(message);
     setTimeout(() => setFeedback(''), 1800);
@@ -139,9 +136,7 @@ export const LatexMarkdownWidget: FC = () => {
 
     try {
       await document.fonts?.ready;
-    } catch (error) {
-      console.warn('No se pudieron cargar las fuentes para exportar.', error);
-    }
+    } catch {}
     await new Promise<void>((r) => requestAnimationFrame(() => r()));
 
     const cleanup = () => {
@@ -187,7 +182,7 @@ export const LatexMarkdownWidget: FC = () => {
         previewElement.innerHTML = `<div class="error-message">${genericError}</div>`;
       }
     }
-  }, [input, mode, t]);
+  }, [input, mode]);
 
   // Si las traducciones no están listas, mostrar un loader simple
   if (!ready) {
@@ -239,15 +234,4 @@ export const LatexMarkdownWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'latex-markdown',
-  title: 'widgets.latex_markdown.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/LatexMarkdown.png')} alt={t('widgets.latex_markdown.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 900, height: 550 },
-};
+export { widgetConfig } from './widgetConfig';

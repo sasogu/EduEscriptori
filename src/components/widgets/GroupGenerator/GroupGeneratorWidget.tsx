@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 // CORRECCIÓN: Se eliminaron 'Users' y 'ListCollapse' de esta línea
 import { Upload, Expand, Minimize } from 'lucide-react';
 import './GroupGeneratorWidget.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 type GroupMode = 'byCount' | 'bySize';
 
@@ -251,15 +249,4 @@ export const GroupGeneratorWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'group-generator',
-  title: 'widgets.group_generator.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/GroupGenerator.png')} alt={t('widgets.group_generator.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 700, height: 550 },
-};
+export { widgetConfig } from './widgetConfig';

@@ -5,9 +5,7 @@ import { Heading as TiptapHeadingExtension } from '@tiptap/extension-heading';
 import { marked } from 'marked';
 import TurndownService from 'turndown';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
-import type { WidgetConfig } from '../../../types';
 import { useTranslation } from 'react-i18next';
-import { withBaseUrl } from '../../../utils/assetPaths';
 import './Notepad.css';
 import {
   Bold,
@@ -64,7 +62,7 @@ const MenuBar: React.FC<{ editor: Editor | null; onUpload: () => void; onDownloa
   );
 };
 
-export const NotepadWidget: React.FC = () => {
+export const NotepadWidget = () => {
   const { t } = useTranslation();
   const [content, setContent] = useLocalStorage('notepad-content-html', t('widgets.notepad.initial_content'));
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -132,14 +130,4 @@ export const NotepadWidget: React.FC = () => {
   );
 };
 
-const WidgetIcon: React.FC = () => {
-    const { t } = useTranslation();
-    return <img src={withBaseUrl('icons/Notepad.png')} alt={t('widgets.notepad.icon_alt')} width="52" height="52" />;
-}
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'notepad',
-  title: 'widgets.notepad.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 500, height: 450 },
-};
+export { widgetConfig } from './widgetConfig';

@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import type { FC } from 'react';
-import type { WidgetConfig } from '../../../types';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import { useTranslation } from 'react-i18next';
 import { Plus, Minus, UserPlus, RotateCcw, Trash2 } from 'lucide-react';
 import './Scoreboard.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 interface Player {
   id: number;
@@ -91,14 +89,4 @@ export const ScoreboardWidget: FC = () => {
   );
 };
 
-const WidgetIcon: FC = () => {
-    const { t } = useTranslation();
-    return <img src={withBaseUrl('icons/Scoreboard.png')} alt={t('widgets.scoreboard.icon_alt')} width="52" height="52" />;
-}
-
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'scoreboard',
-  title: 'widgets.scoreboard.title',
-  icon: <WidgetIcon />,
-  defaultSize: { width: 400, height: 450 },
-};
+export { widgetConfig } from './widgetConfig';

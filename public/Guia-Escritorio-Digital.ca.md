@@ -4,7 +4,11 @@ Escriptori Digital és una pissarra de treball amb “finestres” pensada per a
 
 ## Com s’utilitza
 
-- **Obrir un widget**: des de la barra inferior o des de la **Biblioteca de widgets**.
+- **Data i hora en pantalla**: visibles a la cantonada superior dreta. Es poden desactivar a **Eines → Aparença**.
+
+- **Menú Inici**: prem el botó Inici a la cantonada inferior esquerra per obrir el menú de programes, favorits, ajustos i ajuda.
+
+- **Obrir un widget**: des de la barra inferior, el menú Inici o la **Biblioteca de widgets**.
 - **Tancar-ho tot**: al menú contextual de l’escriptori.
 - **Perfils**: crea diversos escriptoris i canvia entre ells.
 - **Fons**: tria un fons predefinit o puja’n un de propi.
@@ -21,24 +25,35 @@ Escriptori Digital és una pissarra de treball amb “finestres” pensada per a
 ### Temps i ritme
 
 - **Temporitzador**: compte enrere per a activitats per estacions, exàmens curts, treball per torns, etc.
-- **Cronòmetre.
+- **Cronòmetre**: mesura temps (experiments, reptes, educació física, dinàmiques).
 - **Metrònom**: marca un pols constant. Útil per a música, lectura rítmica, dinàmiques de classe o treball per intervals.
 
 ### Matemàtiques i ciències
 
 - **Calculadora científica**: càlculs comuns en ciències i matemàtiques.
-- **Convertidor d’unitats per a problemes i pràctiques.
-- **Markdown + LaTeX.
+- **Convertidor d’unitats**: converteix magnituds per a problemes i pràctiques.
+- **Markdown + LaTeX**: escriu apunts amb fórmules i format.
 
 ### Pissarra, escriptura i recursos
 
 - **Bloc de notes**: notes ràpides per a consignes, idees, exemples, llistes, etc.
-- **Pissarra de dibuix.
-- **Carrusel d’imatges.
+- **Pissarra de dibuix**: dibuix a mà alçada (esquemes, gràfiques, mapes conceptuals, diagrames).
+- **Carrusel d’imatges**: mostra una col·lecció d’imatges (làmines, exercicis, fotos de laboratori, mapes…).
 - **Visor web**: obre una pàgina web dins l’escriptori per usar un recurs en línia sense canviar de pestanya.
-- **Visor PDF**: obre fitxers PDF dins de l’escriptori.
+- **Web local**: desa webs al navegador (des de ZIP o carpeta) i executa-les sense connexió.
+- **Explorador de fitxers**: obre fitxers locals (PDF, imatges, text i Markdown, àudio i vídeo).
 - **Visor directe**: pensat per mostrar contingut web o recursos externs de manera còmoda durant l’explicació.
-- **HTML.
+- **HTML**: espai per mostrar continguts preparats.
+
+### Eines participatives
+
+- **Votació simple**: votacions en temps real amb resultats immediats.
+- **Escala de valoració**: recull opinions amb escales.
+- **Núvol de paraules**: respostes curtes en un núvol dinàmic.
+- **Pluja d'idees i vots**: propostes i votació per prioritzar.
+- **Mur interactiu**: mur col·laboratiu amb notes tipus post-it.
+- **QPlay**: concurs interactiu amb qüestionaris.
+- **BoardLive**: pissarra col·laborativa en temps real.
 
 ### Interacció, atzar i jocs educatius
 

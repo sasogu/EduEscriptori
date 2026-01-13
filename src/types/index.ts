@@ -1,7 +1,8 @@
 // src/types/index.ts
 
-import type { FC, ReactNode } from 'react';
-import type { Theme } from '../context/ThemeContext';
+import type { ComponentType, LazyExoticComponent, ReactNode } from 'react';
+
+export type WidgetComponent = ComponentType<any> | LazyExoticComponent<ComponentType<any>>;
 
 /**
  * Define la estructura de la configuración estática de un widget.
@@ -12,7 +13,7 @@ export interface WidgetConfig {
   title: string;
   icon: string | ReactNode;
   defaultSize: { width: number; height: number };
-  component: FC; // El componente de React como una función
+  component: WidgetComponent; // El componente de React como una función (cargado bajo demanda)
 }
 
 /**
@@ -38,7 +39,7 @@ export interface ActiveWidget {
  * Contiene todos los ajustes que queremos persistir.
  */
 export interface DesktopProfile {
-  theme: Theme;
+  theme: any; // Usamos 'any' por simplicidad, se refiere a la estructura Theme de ThemeContext
   activeWidgets: ActiveWidget[];
   pinnedWidgets: string[];
 }

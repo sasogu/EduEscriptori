@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WidgetConfig } from '../../../types';
 import './ScientificCalculatorWidget.css';
-import { withBaseUrl } from '../../../utils/assetPaths';
 
 // Layouts de botones (sin cambios)
 const basicLayout = [
@@ -117,7 +115,7 @@ export const ScientificCalculatorWidget: FC = () => {
 
       evalExpr = evalExpr.replace(/(\d+(?:\.\d+)?)!/g, (_, numStr) => {
         if (numStr.includes('.')) return 'Error';
-        const n = parseInt(numStr);
+        let n = parseInt(numStr);
         if (n > 20) return 'Infinity';
         if (n < 0) return 'Error';
         if (n === 0) return '1';
@@ -139,13 +137,9 @@ export const ScientificCalculatorWidget: FC = () => {
   };
 
   const handleBackspace = () => {
-    if (display.length > 1) {
-      setDisplay(display.slice(0, -1));
-      setExpression(expression.slice(0, -1));
-      return;
-    }
-    setDisplay('0');
-    setExpression('');
+    display.length > 1
+      ? (setDisplay(display.slice(0, -1)), setExpression(expression.slice(0, -1)))
+      : (setDisplay('0'), setExpression(''));
   };
   const handleClear = () => { setDisplay('0'); setExpression(''); };
 
@@ -284,15 +278,4 @@ export const ScientificCalculatorWidget: FC = () => {
   );
 };
 
-export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-  id: 'scientific-calculator',
-  title: 'widgets.scientific_calculator.title',
-  icon: (() => {
-    const WidgetIcon: React.FC = () => {
-      const { t } = useTranslation();
-      return <img src={withBaseUrl('icons/ScientificCalculator.png')} alt={t('widgets.scientific_calculator.title')} width={52} height={52} />;
-    };
-    return <WidgetIcon />;
-  })(),
-  defaultSize: { width: 400, height: 600 },
-};
+export { widgetConfig } from './widgetConfig';
